@@ -23,35 +23,26 @@ export default function SwapCard() {
   const [toToken, setToToken] = useState("USDC");
 
   const [fromAmount, setFromAmount] = useState("");
-  const [toAmount, setToAmount] = useState("");
 
   const [selecting, setSelecting] =
     useState<"from" | "to">("from");
 
- const rate = 0;
-const loading = false;
 
-  useEffect(() => {
-    if (!fromAmount) {
-      setToAmount("");
-      return;
-    }
+ function handleSwap() {
+  const oldFrom = fromToken;
+  const oldTo = toToken;
 
-    const value = Number(fromAmount);
+  setFromToken(oldTo);
+  setToToken(oldFrom);
 
-    if (isNaN(value)) return;
-
-    setToAmount((value * rate).toFixed(6));
-  }, [fromAmount, rate]);
-
-  function handleSwap() {
-    setFromToken(toToken);
-    setToToken(fromToken);
-
-    setFromAmount(toAmount);
-    setToAmount(fromAmount);
+  if (fromAmount) {
+    fetchQuote(
+      oldTo,
+      oldFrom,
+      fromAmount
+    );
   }
-
+}
   return (
     <>
       <div
@@ -97,9 +88,17 @@ const loading = false;
 
             <input
               value={fromAmount}
-              onChange={(e) =>
-                setFromAmount(e.target.value)
-              }
+             onChange={async (e) => {
+  const value = e.target.value;
+
+  setFromAmount(value);
+
+  await fetchQuote(
+    fromToken,
+    toToken,
+    value
+  );
+}}
               placeholder="0.0"
               className="w-36 bg-transparent text-3xl font-semibold outline-none"
             />
@@ -152,7 +151,7 @@ const loading = false;
           <div className="flex items-center justify-between">
 
             <input
-              value={toAmount}
+             value={quote?.buyAmount ?? ""}
               readOnly
               placeholder="0.0"
               className="w-36 bg-transparent text-3xl font-semibold outline-none"
@@ -170,12 +169,12 @@ const loading = false;
 
         </div>
 
-        <SwapInfo
-          rate={rate}
-          loading={loading}
-          fee="$0.18"
-          route="Ethereum → Base"
-        />
+      <SwapInfo
+  rate={Number(quote?.price ?? 0)}
+  loading={loading}
+  fee={`${quote?.estimatedGas ?? "--"} ETH`}
+  route={`${fromToken} → ${toToken}`}
+/>
 
         <Button
           className="
