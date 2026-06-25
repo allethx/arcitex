@@ -1,21 +1,51 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+import { ArrowDownUp, Settings2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Settings2, ArrowDownUp } from "lucide-react";
+
 
 import TokenButton from "./TokenButton";
-import SwapInfo from "./SwapInfo";
 import TokenModal from "@/components/modal/TokenModal";
-
+import SwapInfo from "./SwapInfo";
+import { useQuote } from "@/hooks/useQuote";
 export default function SwapCard() {
   const [openModal, setOpenModal] = useState(false);
 
   const [fromToken, setFromToken] = useState("ETH");
   const [toToken, setToToken] = useState("USDC");
 
-  const [selecting, setSelecting] = useState<"from" | "to">("from");
+  const [fromAmount, setFromAmount] = useState("");
+  const [toAmount, setToAmount] = useState("");
+
+  const [selecting, setSelecting] =
+    useState<"from" | "to">("from");
+
+ const rate = 0;
+const loading = false;
+
+  useEffect(() => {
+    if (!fromAmount) {
+      setToAmount("");
+      return;
+    }
+
+    const value = Number(fromAmount);
+
+    if (isNaN(value)) return;
+
+    setToAmount((value * rate).toFixed(6));
+  }, [fromAmount, rate]);
+
+  function handleSwap() {
+    setFromToken(toToken);
+    setToToken(fromToken);
+
+    setFromAmount(toAmount);
+    setToAmount(fromAmount);
+  }
 
   return (
     <>
@@ -29,100 +59,132 @@ export default function SwapCard() {
           border-zinc-700
           bg-zinc-900/70
           p-6
-          shadow-[0_0_60px_rgba(139,92,246,0.15)]
-          backdrop-blur
+          backdrop-blur-xl
         "
       >
         {/* Header */}
-        <div className="mb-6 flex items-center justify-between">
-          <h2 className="text-2xl font-semibold">Swap</h2>
 
-          <button className="rounded-xl p-2 transition hover:bg-zinc-800">
+        <div className="mb-6 flex items-center justify-between">
+
+          <h2 className="text-2xl font-semibold">
+            Swap
+          </h2>
+
+          <button className="rounded-xl p-2 hover:bg-zinc-800">
+
             <Settings2 className="h-5 w-5" />
+
           </button>
+
         </div>
 
-        <div className="space-y-4">
-          {/* FROM */}
+        {/* FROM */}
 
-          <div className="rounded-2xl bg-zinc-800 p-4">
-            <p className="mb-2 text-sm text-zinc-400">
-              You Pay
-            </p>
+        <div className="rounded-2xl bg-zinc-800 p-4">
 
-            <div className="flex items-center justify-between">
-              <input
-                placeholder="0.0"
-                className="w-32 bg-transparent text-3xl outline-none"
-              />
+          <p className="mb-2 text-sm text-zinc-400">
 
-              <TokenButton
-                symbol={fromToken}
-                onClick={() => {
-                  setSelecting("from");
-                  setOpenModal(true);
-                }}
-              />
-            </div>
+            You Pay
+
+          </p>
+
+          <div className="flex items-center justify-between">
+
+            <input
+              value={fromAmount}
+              onChange={(e) =>
+                setFromAmount(e.target.value)
+              }
+              placeholder="0.0"
+              className="w-36 bg-transparent text-3xl font-semibold outline-none"
+            />
+
+            <TokenButton
+              symbol={fromToken}
+              onClick={() => {
+                setSelecting("from");
+                setOpenModal(true);
+              }}
+            />
+
           </div>
 
-          {/* SWITCH */}
+        </div>
 
-          <div className="flex justify-center">
-            <button
-              className="
-                rounded-full
-                border
-                border-zinc-700
-                bg-zinc-800
-                p-3
-                transition
-                hover:rotate-180
-                hover:bg-zinc-700
-              "
-            >
-              <ArrowDownUp className="h-5 w-5" />
-            </button>
-          </div>
+        {/* SWITCH */}
 
-          {/* TO */}
+        <div className="my-3 flex justify-center">
 
-          <div className="rounded-2xl bg-zinc-800 p-4">
-            <p className="mb-2 text-sm text-zinc-400">
-              You Receive
-            </p>
-
-            <div className="flex items-center justify-between">
-              <input
-                placeholder="0.0"
-                className="w-32 bg-transparent text-3xl outline-none"
-              />
-
-              <TokenButton
-                symbol={toToken}
-                onClick={() => {
-                  setSelecting("to");
-                  setOpenModal(true);
-                }}
-              />
-            </div>
-          </div>
-
-          <SwapInfo />
-
-          <Button
+          <button
+            onClick={handleSwap}
             className="
-              mt-6
-              h-12
-              w-full
-              rounded-2xl
-              bg-violet-600
-              hover:bg-violet-500
+              rounded-full
+              border
+              border-zinc-700
+              bg-zinc-800
+              p-3
+              transition
+              hover:rotate-180
             "
           >
-            Connect Wallet
-          </Button>
+
+            <ArrowDownUp className="h-5 w-5" />
+
+          </button>
+
         </div>
+
+        {/* TO */}
+
+        <div className="rounded-2xl bg-zinc-800 p-4">
+
+          <p className="mb-2 text-sm text-zinc-400">
+
+            You Receive
+
+          </p>
+
+          <div className="flex items-center justify-between">
+
+            <input
+              value={toAmount}
+              readOnly
+              placeholder="0.0"
+              className="w-36 bg-transparent text-3xl font-semibold outline-none"
+            />
+
+            <TokenButton
+              symbol={toToken}
+              onClick={() => {
+                setSelecting("to");
+                setOpenModal(true);
+              }}
+            />
+
+          </div>
+
+        </div>
+
+        <SwapInfo
+          rate={rate}
+          loading={loading}
+          fee="$0.18"
+          route="Ethereum → Base"
+        />
+
+        <Button
+          className="
+            mt-6
+            h-12
+            w-full
+            rounded-2xl
+            bg-violet-600
+            hover:bg-violet-500
+          "
+        >
+          Connect Wallet
+        </Button>
+
       </div>
 
       <TokenModal
@@ -136,6 +198,7 @@ export default function SwapCard() {
           }
         }}
       />
+
     </>
   );
 }

@@ -2,26 +2,41 @@
 
 import { ChevronDown } from "lucide-react";
 
+import { TOKENS } from "@/lib/tokens";
+
 type Props = {
   symbol: string;
+  onClick: () => void;
 };
 
-export default function TokenButton({ symbol }: Props) {
+export default function TokenButton({
+  symbol,
+  onClick,
+}: Props) {
+  const token = TOKENS.find(
+    (token) => token.symbol === symbol
+  );
+
   return (
     <button
+      onClick={onClick}
       className="
-      flex items-center gap-2
-      rounded-full
-      bg-zinc-800
-      px-4
-      py-2
-      hover:bg-zinc-700
-      transition
+        flex
+        items-center
+        gap-3
+        rounded-2xl
+        bg-zinc-700
+        px-4
+        py-2
+        transition
+        hover:bg-zinc-600
       "
     >
-      <div className="h-6 w-6 rounded-full bg-purple-500" />
+      <div
+        className={`h-6 w-6 rounded-full ${token?.color}`}
+      />
 
-      <span className="font-medium">
+      <span className="font-semibold">
         {symbol}
       </span>
 

@@ -1,22 +1,51 @@
-export default function SwapInfo() {
+type Props = {
+  rate: number;
+  loading?: boolean;
+  fee?: string;
+  route?: string;
+};
+
+export default function SwapInfo({
+  rate,
+  loading = false,
+  fee = "--",
+  route = "--",
+}: Props) {
   return (
-    <div className="mt-5 space-y-3 rounded-2xl bg-zinc-900/60 p-4 text-sm">
+    <div className="mt-5 rounded-2xl bg-zinc-900/60 p-4">
+      <div className="space-y-3 text-sm">
 
-      <div className="flex justify-between text-zinc-400">
-        <span>Rate</span>
-        <span>1 ETH = 2,560 USDC</span>
+        <div className="flex items-center justify-between">
+          <span className="text-zinc-400">
+            Exchange Rate
+          </span>
+
+          <span className="font-medium text-white">
+            {loading ? "Loading..." : rate > 0 ? rate.toFixed(4) : "--"}
+          </span>
+        </div>
+
+        <div className="flex items-center justify-between">
+          <span className="text-zinc-400">
+            Estimated Gas
+          </span>
+
+          <span className="font-medium text-white">
+            {fee}
+          </span>
+        </div>
+
+        <div className="flex items-center justify-between">
+          <span className="text-zinc-400">
+            Route
+          </span>
+
+          <span className="font-medium text-white">
+            {route}
+          </span>
+        </div>
+
       </div>
-
-      <div className="flex justify-between text-zinc-400">
-        <span>Network Fee</span>
-        <span>$1.25</span>
-      </div>
-
-      <div className="flex justify-between text-zinc-400">
-        <span>Route</span>
-        <span>Ethereum → Base</span>
-      </div>
-
     </div>
   );
 }
