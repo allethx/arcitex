@@ -13,6 +13,11 @@ import SwapInfo from "./SwapInfo";
 import { useQuote } from "@/hooks/useQuote";
 export default function SwapCard() {
   const [openModal, setOpenModal] = useState(false);
+  const {
+  quote,
+  loading,
+  fetchQuote,
+} = useQuote();
 
   const [fromToken, setFromToken] = useState("ETH");
   const [toToken, setToToken] = useState("USDC");
