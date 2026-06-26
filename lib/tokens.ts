@@ -1,33 +1,38 @@
 export type Token = {
   symbol: string;
   name: string;
-  color: string;
+  address: string;
+  decimals: number;
+  chainId: number;
 };
 
 export const TOKENS: Token[] = [
   {
     symbol: "ETH",
     name: "Ethereum",
-    color: "bg-violet-500",
+    address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    decimals: 18,
+    chainId: 1,
   },
   {
     symbol: "USDC",
     name: "USD Coin",
-    color: "bg-blue-500",
+    address: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+    decimals: 6,
+    chainId: 1,
   },
   {
     symbol: "USDT",
-    name: "Tether",
-    color: "bg-green-500",
+    name: "Tether USD",
+    address: "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+    decimals: 6,
+    chainId: 1,
   },
   {
     symbol: "WBTC",
     name: "Wrapped Bitcoin",
-    color: "bg-orange-500",
-  },
-  {
-    symbol: "DAI",
-    name: "DAI Stablecoin",
-    color: "bg-yellow-500",
+    address: "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
+    decimals: 8,
+    chainId: 1,
   },
 ];
