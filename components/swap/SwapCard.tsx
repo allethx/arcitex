@@ -1,23 +1,23 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-import { ArrowDownUp, Settings2 } from "lucide-react";
-
-import { Button } from "@/components/ui/button";
-
-
-import TokenButton from "./TokenButton";
 import TokenModal from "@/components/modal/TokenModal";
+
+import SwapHeader from "./SwapHeader";
+import SwapInput from "./SwapInput";
+import SwapOutput from "./SwapOutput";
+import SwapSwitch from "./SwapSwitch";
 import SwapInfo from "./SwapInfo";
+import SwapAction from "./SwapAction";
+
 import { useQuote } from "@/hooks/useQuote";
+import { useWallet } from "@/providers/WalletProvider";
+import { useBalance } from "@/hooks/useBalance";
+import { useSwapValidation } from "@/hooks/useSwapValidation";
+
 export default function SwapCard() {
   const [openModal, setOpenModal] = useState(false);
-  const {
-  quote,
-  loading,
-  fetchQuote,
-} = useQuote();
 
   const [fromToken, setFromToken] = useState("ETH");
   const [toToken, setToToken] = useState("USDC");
@@ -27,22 +27,58 @@ export default function SwapCard() {
   const [selecting, setSelecting] =
     useState<"from" | "to">("from");
 
+  const {
+    quote,
+    loading,
+    fetchQuote,
+  } = useQuote();
 
- function handleSwap() {
-  const oldFrom = fromToken;
-  const oldTo = toToken;
+  const { connected } = useWallet();
 
-  setFromToken(oldTo);
-  setToToken(oldFrom);
+  const { eth } = useBalance();
 
-  if (fromAmount) {
-    fetchQuote(
+  const validation = useSwapValidation({
+    balance: eth,
+    amount: fromAmount,
+  });
+
+  async function handleInput(value: string) {
+    setFromAmount(value);
+
+    await fetchQuote(
+      fromToken,
+      toToken,
+      value
+    );
+  }
+
+  async function handleSwapDirection() {
+    const oldFrom = fromToken;
+    const oldTo = toToken;
+
+    setFromToken(oldTo);
+    setToToken(oldFrom);
+
+    if (!fromAmount) return;
+
+    await fetchQuote(
       oldTo,
       oldFrom,
       fromAmount
     );
   }
-}
+
+  function handleSwap() {
+    console.log("Swap");
+
+    console.log({
+      fromToken,
+      toToken,
+      fromAmount,
+      quote,
+    });
+  }
+
   return (
     <>
       <div
@@ -58,137 +94,45 @@ export default function SwapCard() {
           backdrop-blur-xl
         "
       >
-        {/* Header */}
+        <SwapHeader />
 
-        <div className="mb-6 flex items-center justify-between">
+        <SwapInput
+          value={fromAmount}
+          token={fromToken}
+          onChange={handleInput}
+          onSelect={() => {
+            setSelecting("from");
+            setOpenModal(true);
+          }}
+        />
 
-          <h2 className="text-2xl font-semibold">
-            Swap
-          </h2>
+        <SwapSwitch
+          onClick={handleSwapDirection}
+        />
 
-          <button className="rounded-xl p-2 hover:bg-zinc-800">
+        <SwapOutput
+          value={quote?.buyAmount ?? ""}
+          token={toToken}
+          onSelect={() => {
+            setSelecting("to");
+            setOpenModal(true);
+          }}
+        />
 
-            <Settings2 className="h-5 w-5" />
+        <SwapInfo
+          rate={Number(quote?.price ?? 0)}
+          loading={loading}
+          fee={`${quote?.estimatedGas ?? "--"} ETH`}
+          route={`${fromToken} → ${toToken}`}
+        />
 
-          </button>
-
-        </div>
-
-        {/* FROM */}
-
-        <div className="rounded-2xl bg-zinc-800 p-4">
-
-          <p className="mb-2 text-sm text-zinc-400">
-
-            You Pay
-
-          </p>
-
-          <div className="flex items-center justify-between">
-
-            <input
-              value={fromAmount}
-             onChange={async (e) => {
-  const value = e.target.value;
-
-  setFromAmount(value);
-
-  await fetchQuote(
-    fromToken,
-    toToken,
-    value
-  );
-}}
-              placeholder="0.0"
-              className="w-36 bg-transparent text-3xl font-semibold outline-none"
-            />
-
-            <TokenButton
-              symbol={fromToken}
-              onClick={() => {
-                setSelecting("from");
-                setOpenModal(true);
-              }}
-            />
-
-          </div>
-
-        </div>
-
-        {/* SWITCH */}
-
-        <div className="my-3 flex justify-center">
-
-          <button
-            onClick={handleSwap}
-            className="
-              rounded-full
-              border
-              border-zinc-700
-              bg-zinc-800
-              p-3
-              transition
-              hover:rotate-180
-            "
-          >
-
-            <ArrowDownUp className="h-5 w-5" />
-
-          </button>
-
-        </div>
-
-        {/* TO */}
-
-        <div className="rounded-2xl bg-zinc-800 p-4">
-
-          <p className="mb-2 text-sm text-zinc-400">
-
-            You Receive
-
-          </p>
-
-          <div className="flex items-center justify-between">
-
-            <input
-             value={quote?.buyAmount ?? ""}
-              readOnly
-              placeholder="0.0"
-              className="w-36 bg-transparent text-3xl font-semibold outline-none"
-            />
-
-            <TokenButton
-              symbol={toToken}
-              onClick={() => {
-                setSelecting("to");
-                setOpenModal(true);
-              }}
-            />
-
-          </div>
-
-        </div>
-
-      <SwapInfo
-  rate={Number(quote?.price ?? 0)}
-  loading={loading}
-  fee={`${quote?.estimatedGas ?? "--"} ETH`}
-  route={`${fromToken} → ${toToken}`}
-/>
-
-        <Button
-          className="
-            mt-6
-            h-12
-            w-full
-            rounded-2xl
-            bg-violet-600
-            hover:bg-violet-500
-          "
-        >
-          Connect Wallet
-        </Button>
-
+        <SwapAction
+          connected={connected}
+          valid={validation.valid}
+          message={validation.message}
+          loading={loading}
+          onSwap={handleSwap}
+        />
       </div>
 
       <TokenModal
@@ -202,7 +146,6 @@ export default function SwapCard() {
           }
         }}
       />
-
     </>
   );
 }

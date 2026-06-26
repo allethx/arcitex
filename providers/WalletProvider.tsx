@@ -10,6 +10,7 @@ import {
 
 type WalletContextType = {
   connected: boolean;
+  loading: boolean;
   address: string | null;
   connect: () => Promise<void>;
   disconnect: () => void;
@@ -23,30 +24,38 @@ export function WalletProvider({
   children: ReactNode;
 }) {
   const [connected, setConnected] = useState(false);
-
+  const [loading, setLoading] = useState(false);
   const [address, setAddress] = useState<string | null>(null);
 
   async function connect() {
-    // sementara dummy
-    setConnected(true);
+    setLoading(true);
 
-    setAddress("0x72A8...91Fd");
+    try {
+      // Dummy sementara.
+      // Nanti diganti dengan Reown AppKit.
+      await new Promise((resolve) => setTimeout(resolve, 700));
+
+      setConnected(true);
+      setAddress("0x72A8...91Fd");
+    } finally {
+      setLoading(false);
+    }
   }
 
   function disconnect() {
     setConnected(false);
-
     setAddress(null);
   }
 
   const value = useMemo(
     () => ({
       connected,
+      loading,
       address,
       connect,
       disconnect,
     }),
-    [connected, address]
+    [connected, loading, address]
   );
 
   return (
@@ -60,7 +69,7 @@ export function useWallet() {
   const context = useContext(WalletContext);
 
   if (!context) {
-    throw new Error("WalletProvider not found");
+    throw new Error("useWallet must be used inside WalletProvider");
   }
 
   return context;
