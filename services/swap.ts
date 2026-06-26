@@ -1,25 +1,21 @@
-import { getUsdPrice } from "./prices";
+export type SwapRequest = {
+  sellToken: string;
+  buyToken: string;
+  amount: string;
+};
 
-export async function getSwapRate(
-  from: string,
-  to: string
-) {
-  const fromPrice = await getUsdPrice(from);
+export async function executeSwap(data: SwapRequest) {
+  const response = await fetch("/api/swap", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
 
-  const toPrice = await getUsdPrice(to);
+  if (!response.ok) {
+    throw new Error("Swap failed");
+  }
 
-  return fromPrice / toPrice;
-}
-
-export async function calculateSwap(
-  amount: number,
-  from: string,
-  to: string
-) {
-  const rate = await getSwapRate(from, to);
-
-  return {
-    rate,
-    output: amount * rate,
-  };
+  return response.json();
 }
