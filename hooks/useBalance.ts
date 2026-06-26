@@ -1,44 +1,25 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
-import { getWalletBalance } from "@/services/balance";
-import { useWallet } from "@/providers/WalletProvider";
+import { useMemo } from "react";
+import { useAccount, useBalance as useWagmiBalance } from "wagmi";
 
 export function useBalance() {
-  const { connected } = useWallet();
+  const { address, isConnected } = useAccount();
 
-  const [eth, setEth] = useState(0);
-  const [usdc, setUsdc] = useState(0);
+  const { data, isLoading } = useWagmiBalance({
+    address,
+  });
 
-  const [loading, setLoading] = useState(false);
+  const eth = useMemo(() => {
+    if (!data) return 0;
 
-  useEffect(() => {
-    if (!connected) {
-      setEth(0);
-      setUsdc(0);
-      return;
-    }
-
-    async function load() {
-      setLoading(true);
-
-      try {
-        const balance = await getWalletBalance();
-
-        setEth(balance.eth);
-        setUsdc(balance.usdc);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    load();
-  }, [connected]);
+    return Number(data.formatted);
+  }, [data]);
 
   return {
     eth,
-    usdc,
-    loading,
+    usdc: 0,
+    loading: isLoading,
+    connected: isConnected,
   };
 }

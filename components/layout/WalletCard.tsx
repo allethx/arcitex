@@ -3,10 +3,14 @@
 import { Wallet } from "lucide-react";
 
 import ConnectWalletButton from "@/components/wallet/ConnectWalletButton";
-import { useWallet } from "@/providers/WalletProvider";
+import { useWallet } from "@/hooks/useWallet";
 import { useBalance } from "@/hooks/useBalance";
 export default function WalletCard() {
-  const { connected, address } = useWallet();
+ const {
+  connected,
+  address,
+  chain,
+} = useWallet();
 const { eth, usdc, loading } = useBalance();
 
   return (
@@ -33,9 +37,11 @@ const { eth, usdc, loading } = useBalance();
             Wallet
           </p>
 
-          <h3 className="font-semibold">
-            {connected ? address : "Not Connected"}
-          </h3>
+         <h3 className="font-semibold">
+  {connected && address
+    ? `${address.slice(0, 6)}...${address.slice(-4)}`
+    : "Not Connected"}
+</h3>
         </div>
       </div>
 
@@ -44,19 +50,23 @@ const { eth, usdc, loading } = useBalance();
 <div className="mt-5 rounded-2xl bg-zinc-800/70 p-4">
 
   <div className="mb-4 flex items-center justify-between">
-    <span className="text-zinc-500">
-      Network
-    </span>
+  <span className="text-zinc-500">
+    Network
+  </span>
 
-    <span>Ethereum</span>
-  </div>
+  <span>
+    {connected
+      ? chain?.name ?? "--"
+      : "--"}
+  </span>
+</div>
 
   <div className="mb-3 flex items-center justify-between">
     <div>
       <p className="font-medium">ETH</p>
       <p className="text-xs text-zinc-500">
-        Ethereum
-      </p>
+  {chain?.name ?? "Native"}
+</p>
     </div>
 
     <span>

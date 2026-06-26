@@ -2,6 +2,7 @@ export type QuoteParams = {
   sellToken: string;
   buyToken: string;
   sellAmount: string;
+  taker: string;
 };
 
 export type QuoteResult = {
@@ -16,11 +17,13 @@ export async function getQuote({
   sellToken,
   buyToken,
   sellAmount,
+  taker,
 }: QuoteParams): Promise<QuoteResult> {
   const params = new URLSearchParams({
     sellToken,
     buyToken,
     sellAmount,
+    taker,
   });
 
   const response = await fetch(
@@ -32,7 +35,11 @@ export async function getQuote({
   );
 
   if (!response.ok) {
-    throw new Error("Failed to fetch quote");
+    const error = await response.text();
+
+    throw new Error(
+      error || "Failed to fetch quote"
+    );
   }
 
   return response.json();

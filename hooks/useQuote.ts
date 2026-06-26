@@ -1,11 +1,18 @@
 "use client";
 
 import { useState } from "react";
+import { useAccount } from "wagmi";
+
 import { getQuote, QuoteResult } from "@/services/quote";
 
 export function useQuote() {
-  const [quote, setQuote] = useState<QuoteResult | null>(null);
-  const [loading, setLoading] = useState(false);
+  const { address } = useAccount();
+
+  const [quote, setQuote] =
+    useState<QuoteResult | null>(null);
+
+  const [loading, setLoading] =
+    useState(false);
 
   async function fetchQuote(
     sellToken: string,
@@ -17,6 +24,11 @@ export function useQuote() {
       return;
     }
 
+    if (!address) {
+      setQuote(null);
+      return;
+    }
+
     try {
       setLoading(true);
 
@@ -24,6 +36,7 @@ export function useQuote() {
         sellToken,
         buyToken,
         sellAmount,
+        taker: address,
       });
 
       setQuote(result);
