@@ -1,49 +1,66 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import ConnectWalletButton from "@/components/wallet/ConnectWalletButton";
-
 type Props = {
   connected: boolean;
   valid: boolean;
   message: string;
-  loading?: boolean;
-  onSwap?: () => void;
+  loading: boolean;
+  onSwap: () => void;
 };
 
 export default function SwapAction({
   connected,
   valid,
   message,
-  loading = false,
+  loading,
   onSwap,
 }: Props) {
-  if (!connected) {
-    return (
-      <div className="mt-6">
-        <ConnectWalletButton fullWidth />
-      </div>
-    );
-  }
+  const disabled =
+    !connected || !valid || loading;
 
   return (
-    <Button
-      onClick={onSwap}
-      disabled={!valid || loading}
-      className={`
-        mt-6
-        h-12
-        w-full
-        rounded-2xl
-        transition
-        ${
-          valid
-            ? "bg-violet-600 hover:bg-violet-500"
-            : "bg-zinc-700 cursor-not-allowed"
-        }
-      `}
-    >
-      {loading ? "Swapping..." : message}
-    </Button>
+    <div className="mt-6">
+
+      {!connected && (
+        <p className="mb-3 text-center text-sm text-zinc-400">
+          Connect your wallet to continue.
+        </p>
+      )}
+
+      {connected && !valid && (
+        <p className="mb-3 text-center text-sm text-red-400">
+          {message}
+        </p>
+      )}
+
+      <button
+        type="button"
+        disabled={disabled}
+        onClick={onSwap}
+        className={`
+          w-full
+          rounded-2xl
+          py-4
+          text-lg
+          font-semibold
+          transition-all
+
+          ${
+            disabled
+              ? "cursor-not-allowed bg-zinc-700 text-zinc-400"
+              : "bg-gradient-to-r from-violet-600 to-cyan-500 text-white hover:opacity-90"
+          }
+        `}
+      >
+        {loading
+          ? "Loading..."
+          : !connected
+          ? "Connect Wallet"
+          : !valid
+          ? message
+          : "Swap"}
+      </button>
+
+    </div>
   );
 }

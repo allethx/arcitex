@@ -1,0 +1,9 @@
+export const CONTRACTS = {
+  EURC:
+    "0x89B50855Aa3bE2F677cD6303Cec089B5F319D72a",
+
+  USDC: "",
+
+  ROUTER:
+    "0x710bC86046828fE73E0cbf45b7f02cdEa793FB3E",
+} as const;

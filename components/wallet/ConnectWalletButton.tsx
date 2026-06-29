@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useState } from "react";
+
 import { Wallet } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -16,8 +18,58 @@ export default function ConnectWalletButton({
 }: Props) {
   const { open } = useAppKit();
 
-  const { isConnected, address } =
-    useAccount();
+  const {
+    isConnected,
+    address,
+    chain,
+  } = useAccount();
+
+  const [mounted, setMounted] =
+    useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+
+    console.log(
+      "BUTTON UPDATE",
+      {
+        address,
+        isConnected,
+        chainId: chain?.id,
+      },
+    );
+  }, [
+    mounted,
+    address,
+    isConnected,
+    chain,
+  ]);
+
+  if (!mounted) {
+    return (
+      <Button
+        className={`
+          h-11
+          rounded-2xl
+          transition
+          bg-violet-600
+          hover:bg-violet-500
+          ${
+            fullWidth
+              ? "w-full"
+              : "px-6"
+          }
+        `}
+      >
+        <Wallet className="mr-2 h-4 w-4" />
+        Connect Wallet
+      </Button>
+    );
+  }
 
   return (
     <Button
@@ -31,13 +83,20 @@ export default function ConnectWalletButton({
             ? "bg-emerald-600 hover:bg-emerald-500"
             : "bg-violet-600 hover:bg-violet-500"
         }
-        ${fullWidth ? "w-full" : "px-6"}
+        ${
+          fullWidth
+            ? "w-full"
+            : "px-6"
+        }
       `}
     >
       <Wallet className="mr-2 h-4 w-4" />
 
-      {isConnected
-        ? `${address?.slice(0, 6)}...${address?.slice(-4)}`
+      {isConnected && address
+        ? `${address.slice(
+            0,
+            6,
+          )}...${address.slice(-4)}`
         : "Connect Wallet"}
     </Button>
   );

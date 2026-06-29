@@ -14,11 +14,12 @@ export default function TokenButton({
   onClick,
 }: Props) {
   const token = TOKENS.find(
-    (token) => token.symbol === symbol
+    (item) => item.symbol === symbol
   );
 
   return (
     <button
+      type="button"
       onClick={onClick}
       className="
         flex
@@ -33,11 +34,13 @@ export default function TokenButton({
       "
     >
       <div
-        className={`h-6 w-6 rounded-full ${token?.color}`}
+        className={`h-6 w-6 rounded-full ${
+          token?.color ?? "bg-zinc-500"
+        }`}
       />
 
       <span className="font-semibold">
-        {symbol}
+        {token?.symbol ?? symbol}
       </span>
 
       <ChevronDown className="h-4 w-4" />

@@ -1,7 +1,7 @@
 "use client";
 
 import { Bell, Search } from "lucide-react";
-import { useWallet } from "@/hooks/useWallet";
+
 import ConnectWalletButton from "@/components/wallet/ConnectWalletButton";
 
 export default function Topbar() {

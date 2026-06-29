@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import TokenModal from "@/components/modal/TokenModal";
 
@@ -11,72 +11,60 @@ import SwapSwitch from "./SwapSwitch";
 import SwapInfo from "./SwapInfo";
 import SwapAction from "./SwapAction";
 
-import { useQuote } from "@/hooks/useQuote";
 import { useWallet } from "@/hooks/useWallet";
-import { useBalance } from "@/hooks/useBalance";
-import { useSwapValidation } from "@/hooks/useSwapValidation";
+import { useSwap } from "@/hooks/useSwap";
+import { useTokenBalance } from "@/hooks/useTokenBalance";
+
+import { getTokenBySymbol } from "@/lib/tokens";
 
 export default function SwapCard() {
   const [openModal, setOpenModal] = useState(false);
 
-  const [fromToken, setFromToken] = useState("ETH");
-  const [toToken, setToToken] = useState("USDC");
+  const [fromToken, setFromToken] =
+    useState("USDC");
 
-  const [fromAmount, setFromAmount] = useState("");
+  const [toToken, setToToken] =
+    useState("EURC");
+
+  const [fromAmount, setFromAmount] =
+    useState("");
 
   const [selecting, setSelecting] =
     useState<"from" | "to">("from");
+  
+    const [mounted, setMounted] =
+  useState(false);
 
-  const {
-    quote,
-    loading,
-    fetchQuote,
-  } = useQuote();
+useEffect(() => {
+  setMounted(true);
+}, []);
 
   const { connected } = useWallet();
 
-  const { eth } = useBalance();
+  const selectedToken =
+    getTokenBySymbol(fromToken);
 
-  const validation = useSwapValidation({
-    balance: eth,
-    amount: fromAmount,
+  const {
+    balance,
+  } = useTokenBalance({
+    token: selectedToken?.address,
   });
 
-  async function handleInput(value: string) {
-    setFromAmount(value);
+  const {
+    quote,
+    validation,
+    loading,
+    swap,
+  } = useSwap({
+    fromToken,
+    toToken,
+    fromAmount,
+    balance,
+  });
 
-    await fetchQuote(
-      fromToken,
-      toToken,
-      value
-    );
-  }
-
-  async function handleSwapDirection() {
-    const oldFrom = fromToken;
-    const oldTo = toToken;
-
-    setFromToken(oldTo);
-    setToToken(oldFrom);
-
-    if (!fromAmount) return;
-
-    await fetchQuote(
-      oldTo,
-      oldFrom,
-      fromAmount
-    );
-  }
-
-  function handleSwap() {
-    console.log("Swap");
-
-    console.log({
-      fromToken,
-      toToken,
-      fromAmount,
-      quote,
-    });
+  function handleSwapDirection() {
+    setFromToken(toToken);
+    setToToken(fromToken);
   }
 
   return (
@@ -99,7 +87,8 @@ export default function SwapCard() {
         <SwapInput
           value={fromAmount}
           token={fromToken}
-          onChange={handleInput}
+          balance={balance}
+          onChange={setFromAmount}
           onSelect={() => {
             setSelecting("from");
             setOpenModal(true);
@@ -111,7 +100,7 @@ export default function SwapCard() {
         />
 
         <SwapOutput
-          value={quote?.buyAmount ?? ""}
+          value={quote.amount}
           token={toToken}
           onSelect={() => {
             setSelecting("to");
@@ -120,19 +109,23 @@ export default function SwapCard() {
         />
 
         <SwapInfo
-          rate={Number(quote?.price ?? 0)}
-          loading={loading}
-          fee={`${quote?.estimatedGas ?? "--"} ETH`}
-          route={`${fromToken} → ${toToken}`}
+         rate={quote.rate}
+        loading={quote.loading}
+         fee={quote.fee}
+        route={quote.provider}
+         fromToken={fromToken}
+         toToken={toToken}
         />
 
-        <SwapAction
-          connected={connected}
-          valid={validation.valid}
-          message={validation.message}
+        {mounted && (
+         <SwapAction
+            connected={connected}
+           valid={validation.valid}
+           message={validation.message}
           loading={loading}
-          onSwap={handleSwap}
-        />
+           onSwap={swap}
+         />
+)}
       </div>
 
       <TokenModal

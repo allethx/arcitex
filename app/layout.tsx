@@ -1,7 +1,6 @@
 import "./globals.css";
 
 import AppKitProvider from "@/providers/AppKitProvider";
-import { WalletProvider } from "@/providers/WalletProvider";
 
 export default function RootLayout({
   children,
@@ -12,9 +11,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <AppKitProvider>
-          <WalletProvider>
-            {children}
-          </WalletProvider>
+          {children}
         </AppKitProvider>
       </body>
     </html>

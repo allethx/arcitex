@@ -1,4 +1,7 @@
+"use client";
+
 import { useAccount, useDisconnect } from "wagmi";
+
 import { useAppKit } from "@reown/appkit/react";
 
 export function useWallet() {
@@ -10,13 +13,20 @@ export function useWallet() {
     chain,
   } = useAccount();
 
-  const { disconnect } = useDisconnect();
+  const { disconnect } =
+    useDisconnect();
 
   return {
+    address: address ?? null,
+
     connected: isConnected,
-    address,
+
     chain,
+
+    loading: false,
+
     connect: () => open(),
+
     disconnect,
   };
 }

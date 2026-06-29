@@ -1,56 +1,86 @@
 "use client";
 
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+
 import {
   ArrowLeftRight,
-  BarChart3,
+  Briefcase,
   Clock3,
   Droplets,
   Settings,
 } from "lucide-react";
 
-import WalletCard from "./WalletCard";
+import WalletCard from "@/components/wallet/WalletCard";
 
 const menus = [
   {
+    title: "Swap",
+    href: "/app",
     icon: ArrowLeftRight,
-    label: "Swap",
-    active: true,
   },
   {
-    icon: BarChart3,
-    label: "Portfolio",
-    active: false,
+    title: "Portfolio",
+    href: "/app/portfolio",
+    icon: Briefcase,
   },
   {
+    title: "History",
+    href: "/app/history",
     icon: Clock3,
-    label: "History",
-    active: false,
   },
   {
+    title: "Pools",
+    href: "/app/pools",
     icon: Droplets,
-    label: "Pools",
-    active: false,
   },
   {
+    title: "Settings",
+    href: "/app/settings",
     icon: Settings,
-    label: "Settings",
-    active: false,
   },
 ];
 
 export default function Sidebar() {
+  const pathname = usePathname();
+
   return (
-    <aside className="hidden h-[calc(100vh-4rem)] w-72 shrink-0 flex-col lg:flex">
+    <aside
+      className="
+        sticky
+        top-8
+        flex
+        h-[calc(100vh-4rem)]
+        w-64
+        flex-col
+      "
+    >
       {/* Logo */}
 
-      <div className="mb-12">
-        <div className="flex items-center gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-600 to-cyan-500 text-lg font-bold">
+      <div>
+        <div className="mb-10 flex items-center gap-3">
+
+          <div
+            className="
+              flex
+              h-11
+              w-11
+              items-center
+              justify-center
+              rounded-2xl
+              bg-gradient-to-br
+              from-violet-500
+              to-cyan-500
+              text-lg
+              font-bold
+              text-white
+            "
+          >
             A
           </div>
 
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">
+            <h1 className="text-4xl font-bold">
               Arcitex
             </h1>
 
@@ -58,41 +88,58 @@ export default function Sidebar() {
               Smart Cross-chain Exchange
             </p>
           </div>
+
         </div>
+
+        {/* Navigation */}
+
+        <nav className="space-y-2">
+
+          {menus.map((menu) => {
+            const Icon = menu.icon;
+
+            const active =
+              pathname === menu.href;
+
+            return (
+              <Link
+                key={menu.title}
+                href={menu.href}
+                className={`
+                  flex
+                  items-center
+                  gap-3
+                  rounded-2xl
+                  px-5
+                  py-4
+                  transition-all
+
+                  ${
+                    active
+                      ? "bg-gradient-to-r from-violet-600 to-purple-500 text-white"
+                      : "text-zinc-400 hover:bg-zinc-900 hover:text-white"
+                  }
+                `}
+              >
+                <Icon className="h-5 w-5" />
+
+                <span>
+                  {menu.title}
+                </span>
+
+              </Link>
+            );
+          })}
+
+        </nav>
       </div>
 
-      {/* Navigation */}
+      {/* Wallet Mini */}
 
-      <nav className="space-y-2">
-        {menus.map((menu) => {
-          const Icon = menu.icon;
+      <div className="mt-auto pt-8">
+        <WalletCard />
+      </div>
 
-          return (
-            <button
-              key={menu.label}
-              className={`group flex w-full items-center gap-4 rounded-2xl px-4 py-3 text-left transition-all duration-200 ${
-                menu.active
-                  ? "bg-violet-600 text-white shadow-lg shadow-violet-600/20"
-                  : "text-zinc-400 hover:bg-zinc-900 hover:text-white"
-              }`}
-            >
-              <Icon className="h-5 w-5" />
-
-              <span className="font-medium">
-                {menu.label}
-              </span>
-            </button>
-          );
-        })}
-      </nav>
-
-      {/* Spacer */}
-
-      <div className="flex-1" />
-
-      {/* Wallet */}
-
-      <WalletCard />
     </aside>
   );
 }

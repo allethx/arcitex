@@ -1,56 +1,27 @@
 "use client";
 
-import { useState } from "react";
-import { useAccount } from "wagmi";
+import { useMemo } from "react";
 
-import { getQuote, QuoteResult } from "@/services/quote";
+type Props = {
+  fromAmount: string;
+};
 
-export function useQuote() {
-  const { address } = useAccount();
+export function useQuote({
+  fromAmount,
+}: Props) {
+  const amount =
+    Number(fromAmount);
 
-  const [quote, setQuote] =
-    useState<QuoteResult | null>(null);
+  const output = useMemo(() => {
+    if (!amount) return 0;
 
-  const [loading, setLoading] =
-    useState(false);
-
-  async function fetchQuote(
-    sellToken: string,
-    buyToken: string,
-    sellAmount: string
-  ) {
-    if (!sellAmount || Number(sellAmount) <= 0) {
-      setQuote(null);
-      return;
-    }
-
-    if (!address) {
-      setQuote(null);
-      return;
-    }
-
-    try {
-      setLoading(true);
-
-      const result = await getQuote({
-        sellToken,
-        buyToken,
-        sellAmount,
-        taker: address,
-      });
-
-      setQuote(result);
-    } catch (error) {
-      console.error(error);
-      setQuote(null);
-    } finally {
-      setLoading(false);
-    }
-  }
+    return amount;
+  }, [amount]);
 
   return {
-    quote,
-    loading,
-    fetchQuote,
+    output,
+    rate: 1,
+    fee: 0,
+    loading: false,
   };
 }
