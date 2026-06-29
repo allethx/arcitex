@@ -6,8 +6,14 @@ async function proxy(
   request: NextRequest,
   path: string[],
 ) {
-  const url =
-    `${BASE_URL}/${path.join("/")}`;
+  const search =
+  request.nextUrl.search;
+
+const url =
+  `${BASE_URL}/${path.join("/")}${search}`;
+   
+console.log("Forward URL");
+console.log(url);
 
   const headers = new Headers();
  
@@ -77,6 +83,9 @@ console.log("Circle URL:", url);
 console.log("Status:", response.status);
 
 const text = await response.clone().text();
+
+console.log("Response Body:");
+console.log(text);
 
 try {
   console.dir(JSON.parse(text), {

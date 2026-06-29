@@ -13,11 +13,10 @@ import type {
 } from "@circle-fin/app-kit";
 
 import { estimateCircleSwap } from "@/services/circle/quote";
-import { executeCircleSwap } from "@/services/circle/swap";
 
 import { formatUnits } from "viem";
 import { useWallet } from "@/hooks/useWallet";
-import { buildTransactions } from "@/services/circle/executor";
+import { executeCircleSwap } from "@/services/circle/swap";
 
 type UseSwapParams = {
   fromToken: string;
@@ -100,12 +99,6 @@ console.log("LOAD QUOTE", {
   toToken,
 });
 
-console.log("LOAD QUOTE", {
-  address,
-  fromAmount,
-  fromToken,
-  toToken,
-});
 
   try {
     const result =
@@ -215,68 +208,24 @@ console.log("LOAD QUOTE", {
     setError(null);
 
     try {
-    const estimate =
-  await estimateCircleSwap({
-    from: {
-      address: address ?? "",
-      chain: "Arc_Testnet",
-    },
+    const result =
+  await executeCircleSwap({
+    walletProvider,
 
-    tokenIn: fromToken,
-    tokenOut: toToken,
-    amountIn: fromAmount,
+    fromToken,
+
+    toToken,
+
+    amount: fromAmount,
   });
 
-console.log(
-  "Execution Params",
-  estimate.transaction.executionParams
-);
-
-const transactions = buildTransactions(
-  estimate.transaction.executionParams,
-  address ?? ""
-);
-
-console.log("Transactions");
-
-transactions.forEach((tx, index) => {
-  console.group(
-    `Transaction ${index + 1}`
-  );
-
-  console.log("From:", tx.from);
-  console.log("To:", tx.to);
-  console.log("Value:", tx.value);
-  console.log("Data:", tx.data);
-
-  console.groupEnd();
+console.log("Swap Result");
+console.dir(result, {
+  depth: null,
 });
 
-const instructions =
-  estimate.transaction.executionParams.instructions;
+return result;
 
-console.log(
-  "Instructions Count:",
-  instructions.length
-);
-
-const tx = transactions[0];
-
-console.log("Sending Transaction");
-console.log(tx);
-const txHash =
-  await walletProvider.request({
-    method: "eth_sendTransaction",
-    params: [tx],
-  });
-
-console.log("Tx Hash:", txHash);
-
-
-
-return txHash;
-
-return transactions;
 
     } catch (err) {
       console.error(
