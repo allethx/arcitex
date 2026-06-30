@@ -52,13 +52,13 @@ export default function SwapAction({
           }
         `}
       >
-        {loading
-          ? "Loading..."
-          : !connected
-          ? "Connect Wallet"
-          : !valid
-          ? message
-          : "Swap"}
+        {!connected
+       ? "Connect Wallet"
+       : loading
+       ? message
+       : !valid
+       ? message
+       : "Swap"}
       </button>
 
     </div>

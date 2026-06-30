@@ -10,6 +10,7 @@ import SwapOutput from "./SwapOutput";
 import SwapSwitch from "./SwapSwitch";
 import SwapInfo from "./SwapInfo";
 import SwapAction from "./SwapAction";
+import SwapSuccessModal from "@/components/modal/SwapSuccessModal";
 
 import { useWallet } from "@/hooks/useWallet";
 import { useSwap } from "@/hooks/useSwap";
@@ -35,6 +36,12 @@ export default function SwapCard() {
     const [mounted, setMounted] =
   useState(false);
 
+  const [successOpen, setSuccessOpen] =
+  useState(false);
+
+  const [successData, setSuccessData] =
+  useState<any>(null);
+
 useEffect(() => {
   setMounted(true);
 }, []);
@@ -51,16 +58,22 @@ useEffect(() => {
   });
 
   const {
-    quote,
-    validation,
-    loading,
-    swap,
-  } = useSwap({
-    fromToken,
-    toToken,
-    fromAmount,
-    balance,
-  });
+  quote,
+  validation,
+  loading,
+  status,
+  swap,
+} = useSwap({
+  fromToken,
+  toToken,
+  fromAmount,
+  balance,
+
+  onSuccess(result) {
+    setSuccessData(result);
+    setSuccessOpen(true);
+  },
+});
 
   function handleSwapDirection() {
     setFromToken(toToken);
@@ -118,13 +131,25 @@ useEffect(() => {
         />
 
         {mounted && (
-         <SwapAction
-            connected={connected}
-           valid={validation.valid}
-           message={validation.message}
-          loading={loading}
-           onSwap={swap}
-         />
+  <>
+    <SwapAction
+      connected={connected}
+      valid={validation.valid}
+      message={loading ? status : validation.message}
+      loading={loading}
+      onSwap={swap}
+    />
+
+   <SwapSuccessModal
+  open={successOpen}
+  onClose={() => setSuccessOpen(false)}
+  fromToken={fromToken}
+  toToken={toToken}
+  fromAmount={fromAmount}
+  toAmount={successData?.amountOut ?? quote.amount}
+  txHash={successData?.txHash ?? ""}
+/>
+  </>
 )}
       </div>
 

@@ -8,14 +8,11 @@ import {
 
 import { useAppKitProvider } from "@reown/appkit/react";
 
-import type {
-  SwapStatusResult,
-} from "@circle-fin/app-kit";
+import { formatUnits } from "viem";
+
+import { useWallet } from "@/hooks/useWallet";
 
 import { estimateCircleSwap } from "@/services/circle/quote";
-
-import { formatUnits } from "viem";
-import { useWallet } from "@/hooks/useWallet";
 import { executeCircleSwap } from "@/services/circle/swap";
 
 type UseSwapParams = {
@@ -23,6 +20,10 @@ type UseSwapParams = {
   toToken: string;
   fromAmount: string;
   balance: number;
+
+  onSuccess?: (
+    result: SwapStatusResult
+  ) => void;
 };
 
 export function useSwap({
@@ -30,14 +31,20 @@ export function useSwap({
   toToken,
   fromAmount,
   balance,
+  onSuccess,
 }: UseSwapParams) {
   const { walletProvider } =
     useAppKitProvider("eip155");
-const {
-  address,
-} = useWallet();
+
+  const { address } =
+    useWallet();
+
+  // ==========================
+  // State
+  // ==========================
+
   const [estimate, setEstimate] =
-  useState<any>(null);
+    useState<any>(null);
 
   const [quoteLoading, setQuoteLoading] =
     useState(false);
@@ -45,10 +52,16 @@ const {
   const [loading, setLoading] =
     useState(false);
 
+  const [status, setStatus] =
+    useState("Swap");
+
   const [error, setError] =
     useState<string | null>(null);
 
-  // ===== Provider Audit =====
+  // ==========================
+  // Provider Audit
+  // ==========================
+
   useEffect(() => {
     console.group("Provider Audit");
 
@@ -75,64 +88,58 @@ const {
     console.groupEnd();
   }, [walletProvider]);
 
-  // ===== Quote =====
+  // ==========================
+  // Quote
+  // ==========================
+
   useEffect(() => {
     let cancelled = false;
 
+    async function loadQuote() {
+      if (
+        !address ||
+        !fromAmount ||
+        Number(fromAmount) <= 0
+      ) {
+        setEstimate(null);
+        return;
+      }
 
-  async function loadQuote() {
-  if (
-    !address ||
-    !fromAmount ||
-    Number(fromAmount) <= 0
-  ) {
-    setEstimate(null);
-    return;
-  }
+      setQuoteLoading(true);
 
-  setQuoteLoading(true);
-  
-console.log("LOAD QUOTE", {
-  address,
-  fromAmount,
-  fromToken,
-  toToken,
-});
+      try {
+        const result =
+          await estimateCircleSwap({
+            from: {
+              address,
+              chain: "Arc_Testnet",
+            },
 
+            tokenIn: fromToken,
 
-  try {
-    const result =
-      await estimateCircleSwap({
-        from: {
-          address,
-          chain: "Arc_Testnet",
-        },
+            tokenOut: toToken,
 
-        tokenIn: fromToken,
+            amountIn: fromAmount,
+          });
 
-        tokenOut: toToken,
+        if (!cancelled) {
+          setEstimate(result);
+        }
+      } catch (err) {
+        console.error(
+          "Estimate failed:",
+          err,
+        );
 
-        amountIn: fromAmount,
-      });
-
-    if (!cancelled) {
-      setEstimate(result);
+        if (!cancelled) {
+          setEstimate(null);
+        }
+      } finally {
+        if (!cancelled) {
+          setQuoteLoading(false);
+        }
+      }
     }
-  } catch (err) {
-    console.error(
-      "Estimate failed:",
-      err,
-    );
-
-    if (!cancelled) {
-      setEstimate(null);
-    }
-  } finally {
-    if (!cancelled) {
-      setQuoteLoading(false);
-    }
-  }
-}
 
     loadQuote();
 
@@ -140,108 +147,127 @@ console.log("LOAD QUOTE", {
       cancelled = true;
     };
   }, [
-  address,
-  fromToken,
-  toToken,
-  fromAmount,
-]);
-
-  // ===== Validation =====
-  const validation = useMemo(() => {
-    if (!walletProvider) {
-      return {
-        valid: false,
-        message: "Connect Wallet",
-      };
-    }
-
-    if (!fromAmount) {
-      return {
-        valid: false,
-        message: "Enter amount",
-      };
-    }
-
-    const amount =
-      Number(fromAmount);
-
-    if (
-      Number.isNaN(amount) ||
-      amount <= 0
-    ) {
-      return {
-        valid: false,
-        message: "Invalid amount",
-      };
-    }
-
-    if (balance < amount) {
-      return {
-        valid: false,
-        message:
-          "Insufficient balance",
-      };
-    }
-
-    return {
-      valid: true,
-      message: "Swap",
-    };
-  }, [
-    walletProvider,
+    address,
     fromAmount,
-    balance,
+    fromToken,
+    toToken,
   ]);
 
-  // ===== Execute Swap =====
- async function swap(): Promise<any> 
-  
- {
-     if (
-      !walletProvider ||
-      !validation.valid
-    ) {
-      return;
-    }
+  // ==========================
+  // Validation
+  // ==========================
 
-    setLoading(true);
-    setError(null);
 
-    try {
+const validation = useMemo(() => {
+  if (!walletProvider) {
+    return {
+      valid: false,
+      message: "Connect Wallet",
+    };
+  }
+
+  if (!fromAmount) {
+    return {
+      valid: false,
+      message: "Enter amount",
+    };
+  }
+
+  const amount = Number(fromAmount);
+
+  if (
+    Number.isNaN(amount) ||
+    amount <= 0
+  ) {
+    return {
+      valid: false,
+      message: "Invalid amount",
+    };
+  }
+
+  if (balance < amount) {
+    return {
+      valid: false,
+      message:
+        "Insufficient balance",
+    };
+  }
+
+  return {
+    valid: true,
+    message: "Swap",
+  };
+}, [
+  walletProvider,
+  fromAmount,
+  balance,
+]);
+
+// ==========================
+// Execute Swap
+// ==========================
+
+async function swap() {
+  if (
+    !walletProvider ||
+    !validation.valid
+  ) {
+    return;
+  }
+
+  setLoading(true);
+  setError(null);
+  setStatus("Estimating...");
+
+  try {
+    setStatus(
+      "Waiting Confirmation..."
+    );
+
     const result =
   await executeCircleSwap({
     walletProvider,
-
     fromToken,
-
     toToken,
-
     amount: fromAmount,
   });
 
-console.log("Swap Result");
-console.dir(result, {
-  depth: null,
-});
+console.log("========== SWAP RESULT ==========");
 
-return result;
+console.log(
+  JSON.stringify(result, null, 2)
+);
 
+onSuccess?.(result);
+    setStatus("Success");
 
-    } catch (err) {
-      console.error(
-        "Swap Error:",
-        err,
-      );
+    return result;
+  } catch (err) {
+    console.error(
+      "Swap Error:",
+      err,
+    );
 
-      setError(
-        err instanceof Error
-          ? err.message
-          : "Swap failed",
-      );
-    } finally {
-      setLoading(false);
-    }
+    const message =
+      err instanceof Error
+        ? err.message
+        : "Swap failed";
+
+    setError(message);
+
+    setStatus("Failed");
+  } finally {
+    setLoading(false);
+
+    setTimeout(() => {
+      setStatus("Swap");
+    }, 2000);
   }
+}
+
+// ==========================
+// Derived Quote Data
+// ==========================
 
 const exchangeRate =
   estimate?.estimatedAmount &&
@@ -258,44 +284,59 @@ const exchangeRate =
       ).toFixed(6)
     : "--";
 
-  return {
- quote: {
-  loading: quoteLoading,
+// ==========================
+// Hook Return
+// ==========================
 
-  amount:
-    estimate?.estimatedAmount
-      ? formatUnits(
-          BigInt(estimate.estimatedAmount),
-          6
-        )
-      : "",
+return {
+  quote: {
+    loading: quoteLoading,
 
-  rate: exchangeRate,
+    amount:
+      estimate?.estimatedAmount
+        ? formatUnits(
+            BigInt(
+              estimate.estimatedAmount
+            ),
+            6
+          )
+        : "",
 
-  fee:
-    estimate?.fees?.provider?.length
-      ? `${formatUnits(
-          BigInt(
-            estimate.fees.provider[0].amount
-          ),
-          estimate.fees.provider[0].decimals
-        )} ${estimate.fees.provider[0].symbol}`
-      : "--",
+    rate: exchangeRate,
 
-  provider:
-    estimate?.route?.steps?.[0]?.toolName ??
-    estimate?.route?.provider ??
-    "--",
+    fee:
+      estimate?.fees?.provider
+        ?.length
+        ? `${formatUnits(
+            BigInt(
+              estimate.fees.provider[0]
+                .amount
+            ),
+            estimate.fees.provider[0]
+              .decimals
+          )} ${
+            estimate.fees.provider[0]
+              .symbol
+          }`
+        : "--",
 
-  raw: estimate,
-},
+    provider:
+      estimate?.route?.steps?.[0]
+        ?.toolName ??
+      estimate?.route?.provider ??
+      "--",
 
-    validation,
+    raw: estimate,
+  },
 
-    loading,
+  validation,
 
-    error,
+  loading,
 
-    swap,
-  };
+  status,
+
+  error,
+
+  swap,
+};
 }
