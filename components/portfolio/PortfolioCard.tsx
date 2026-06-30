@@ -1,20 +1,23 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
 import { Wallet } from "lucide-react";
+
+import AssetRow from "@/components/portfolio/AssetRow";
+import PortfolioSummary from "@/components/portfolio/PortfolioSummary";
+import LastActivity from "@/components/portfolio/LastActivity";
+import PortfolioValue from "@/components/portfolio/PortfolioValue";
+import AllocationChart from "@/components/charts/AllocationChart";
 
 import { useTokenBalance } from "@/hooks/useTokenBalance";
 import { getTokenBySymbol } from "@/lib/tokens";
+import { useTransactionHistory } from "@/hooks/useTransactionHistory";
 
 export default function PortfolioCard() {
   const mounted = useMounted();
 
-  const usdc =
-    getTokenBySymbol("USDC");
-
-  const eurc =
-    getTokenBySymbol("EURC");
+  const usdc = getTokenBySymbol("USDC");
+  const eurc = getTokenBySymbol("EURC");
 
   const {
     balance: usdcBalance,
@@ -33,17 +36,55 @@ export default function PortfolioCard() {
   const total =
     usdcBalance + eurcBalance;
 
+  const usdcPercent =
+    total > 0
+      ? (usdcBalance / total) * 100
+      : 0;
+
+  const eurcPercent =
+    total > 0
+      ? (eurcBalance / total) * 100
+      : 0;
+
+  const history =
+    useTransactionHistory();
+
+  const completedSwaps =
+    history.length;
+
+  const latest =
+    history[0];
+
+  const formatBalance = (
+    value: number
+  ) =>
+    new Intl.NumberFormat(
+      "en-US",
+      {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 4,
+      }
+    ).format(value);
+
   return (
     <div
       className="
+        w-[360px]
         rounded-3xl
         border
         border-zinc-800
         bg-zinc-900/70
         p-6
         backdrop-blur-xl
+        transition-all
+        duration-300
+        hover:-translate-y-1
+        hover:border-violet-500/40
+        hover:shadow-[0_0_40px_rgba(124,58,237,0.15)]
       "
     >
+      {/* Header */}
+
       <div className="flex items-center gap-3">
 
         <div
@@ -56,7 +97,7 @@ export default function PortfolioCard() {
             rounded-2xl
             bg-gradient-to-br
             from-violet-500
-            to-sky-500
+            to-cyan-500
           "
         >
           <Wallet className="h-5 w-5 text-white" />
@@ -65,84 +106,102 @@ export default function PortfolioCard() {
         <div>
 
           <p className="text-sm text-zinc-500">
-            Portfolio
+            Dashboard
           </p>
 
-          <h2 className="text-2xl font-bold">
-            My Assets
+          <h2 className="text-3xl font-bold">
+            Portfolio
           </h2>
 
         </div>
 
       </div>
 
-      <div className="mt-8 space-y-5">
+      <div className="mt-6 h-px bg-zinc-800" />
 
-        <div className="flex items-center justify-between">
+      <div className="mt-6 space-y-6">
 
-          <div>
+        {/* Portfolio Value */}
 
-            <p className="font-semibold">
-              USDC
-            </p>
+        <PortfolioValue
+          total={total}
+        />
 
-            <p className="text-sm text-zinc-500">
-              USD Coin
-            </p>
+        {/* Allocation */}
 
-          </div>
+        <AllocationChart
+          usdc={usdcBalance}
+          eurc={eurcBalance}
+        />
 
-          <p className="font-semibold">
-            {!mounted
-              ? "--"
-              : usdcLoading
-              ? "Loading..."
-              : usdcBalance.toFixed(4)}
-          </p>
+        {/* Assets */}
 
-        </div>
+        <div
+          className="
+            overflow-hidden
+            rounded-3xl
+            border
+            border-zinc-800
+            bg-zinc-900/40
+            divide-y
+            divide-zinc-800
+          "
+        >
 
-        <div className="flex items-center justify-between">
-
-          <div>
-
-            <p className="font-semibold">
-              EURC
-            </p>
-
-            <p className="text-sm text-zinc-500">
-              Euro Coin
-            </p>
-
-          </div>
-
-          <p className="font-semibold">
-            {!mounted
-              ? "--"
-              : eurcLoading
-              ? "Loading..."
-              : eurcBalance.toFixed(4)}
-          </p>
-
-        </div>
-
-        <div className="border-t border-zinc-800 pt-5">
-
-          <div className="flex items-center justify-between">
-
-            <span className="text-zinc-500">
-              Total Assets
-            </span>
-
-            <span className="text-xl font-bold">
-              {!mounted
+          <AssetRow
+            symbol="USDC"
+            name="USD Coin"
+            logo="/tokens/usdc.png"
+            balance={
+              !mounted
                 ? "--"
-                : total.toFixed(4)}
-            </span>
+                : usdcLoading
+                ? "Loading..."
+                : formatBalance(
+                    usdcBalance
+                  )
+            }
+            percent={usdcPercent}
+          />
 
-          </div>
+          <AssetRow
+            symbol="EURC"
+            name="Euro Coin"
+            logo="/tokens/eurc.png"
+            balance={
+              !mounted
+                ? "--"
+                : eurcLoading
+                ? "Loading..."
+                : formatBalance(
+                    eurcBalance
+                  )
+            }
+            percent={eurcPercent}
+          />
 
         </div>
+
+        {/* Summary */}
+
+        <PortfolioSummary
+          totalAssets={
+            !mounted
+              ? "--"
+              : formatBalance(
+                  total
+                )
+          }
+          completedSwaps={
+            completedSwaps
+          }
+        />
+
+        {/* Activity */}
+
+        <LastActivity
+          latest={latest}
+        />
 
       </div>
 
@@ -151,8 +210,10 @@ export default function PortfolioCard() {
 }
 
 function useMounted() {
-  const [mounted, setMounted] =
-    useState(false);
+  const [
+    mounted,
+    setMounted,
+  ] = useState(false);
 
   useEffect(() => {
     setMounted(true);

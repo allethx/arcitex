@@ -22,15 +22,11 @@ export default function Topbar() {
     >
       {/* Left */}
 
-      <div>
-        <h2 className="text-3xl font-bold">
-          Swap
-        </h2>
-
-        <p className="mt-1 text-sm text-zinc-500">
-          Smart cross-chain token exchange powered by Arcitex.
-        </p>
-      </div>
+      <div className="space-y-1">
+  <p className="text-sm text-zinc-500">
+    Smart cross-chain token exchange powered by Arcitex.
+  </p>
+</div>
 
       {/* Right */}
 
