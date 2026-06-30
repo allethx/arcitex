@@ -16,6 +16,7 @@ import { useWallet } from "@/hooks/useWallet";
 import { useSwap } from "@/hooks/useSwap";
 import { useTokenBalance } from "@/hooks/useTokenBalance";
 
+import { useHistory } from "@/hooks/useHistory";
 import { getTokenBySymbol } from "@/lib/tokens";
 
 export default function SwapCard() {
@@ -48,6 +49,10 @@ useEffect(() => {
 
   const { connected } = useWallet();
 
+  const {
+  addHistory,
+} = useHistory();
+
   const selectedToken =
     getTokenBySymbol(fromToken);
 
@@ -70,9 +75,29 @@ useEffect(() => {
   balance,
 
   onSuccess(result) {
-    setSuccessData(result);
-    setSuccessOpen(true);
-  },
+  setSuccessData(result);
+
+  setSuccessOpen(true);
+
+  addHistory({
+    id: crypto.randomUUID(),
+
+    txHash: result.txHash,
+
+    fromToken,
+
+    toToken,
+
+    fromAmount,
+
+    toAmount:
+      result.amountOut,
+
+    status: "Completed",
+
+    timestamp: Date.now(),
+  });
+},
 });
 
   function handleSwapDirection() {
