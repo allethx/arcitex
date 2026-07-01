@@ -23,9 +23,7 @@ export default function Topbar() {
       {/* Left */}
 
       <div className="space-y-1">
-  <p className="text-sm text-zinc-500">
-    Smart cross-chain token exchange powered by Arcitex.
-  </p>
+  
 </div>
 
       {/* Right */}

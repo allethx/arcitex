@@ -5,38 +5,48 @@ import { usePathname } from "next/navigation";
 
 import {
   ArrowLeftRight,
-  Briefcase,
-  Clock3,
+  Send,
+  GitBranch,
+  BriefcaseBusiness,
+  History,
   Droplets,
   Settings,
 } from "lucide-react";
 
-import WalletCard from "@/components/wallet/WalletCard";
-
 const menus = [
   {
-    title: "Swap",
     href: "/app",
+    label: "Swap",
     icon: ArrowLeftRight,
   },
   {
-    title: "Portfolio",
+    href: "/app/send",
+    label: "Send",
+    icon: Send,
+  },
+  {
+    href: "/app/bridge",
+    label: "Bridge",
+    icon: GitBranch,
+  },
+  {
     href: "/app/portfolio",
-    icon: Briefcase,
+    label: "Portfolio",
+    icon: BriefcaseBusiness,
   },
   {
-    title: "History",
     href: "/app/history",
-    icon: Clock3,
+    label: "History",
+    icon: History,
   },
   {
-    title: "Pools",
     href: "/app/pools",
+    label: "Pools",
     icon: Droplets,
   },
   {
-    title: "Settings",
     href: "/app/settings",
+    label: "Settings",
     icon: Settings,
   },
 ];
@@ -45,101 +55,83 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside
-      className="
-        sticky
-        top-8
-        flex
-        h-[calc(100vh-4rem)]
-        w-64
-        flex-col
-      "
-    >
+    <aside className="flex w-60 flex-col">
+
       {/* Logo */}
 
-      <div>
-        <div className="mb-10 flex items-center gap-3">
-
-          <div
-            className="
-              flex
-              h-11
-              w-11
-              items-center
-              justify-center
-              rounded-2xl
-              bg-gradient-to-br
-              from-violet-500
-              to-cyan-500
-              text-lg
-              font-bold
-              text-white
-            "
-          >
-            A
-          </div>
-
-          <div>
-            <h1 className="text-4xl font-bold">
-              Arcitex
-            </h1>
-
-            <p className="text-sm text-zinc-500">
-              Smart Cross-chain Exchange
-            </p>
-          </div>
-
+      <Link
+        href="/app"
+        className="mb-12 flex items-center gap-3"
+      >
+        <div
+          className="
+            flex
+            h-12
+            w-12
+            items-center
+            justify-center
+            rounded-full
+            bg-gradient-to-br
+            from-violet-500
+            to-sky-500
+            text-lg
+            font-bold
+            text-white
+          "
+        >
+          A
         </div>
 
-        {/* Navigation */}
+        <div>
+          <h1 className="text-2xl font-bold">
+            Arcitex
+          </h1>
 
-        <nav className="space-y-2">
+          <p className="text-sm text-zinc-500">
+            Smart Cross-chain Exchange
+          </p>
+        </div>
+      </Link>
 
-          {menus.map((menu) => {
-            const Icon = menu.icon;
+      {/* Navigation */}
 
-            const active =
-              pathname === menu.href;
+      <nav className="space-y-2">
+        {menus.map((item) => {
+          const Icon = item.icon;
 
-            return (
-              <Link
-                key={menu.title}
-                href={menu.href}
-                className={`
-                  flex
-                  items-center
-                  gap-3
-                  rounded-2xl
-                  px-5
-                  py-4
-                  transition-all
+          const active =
+            pathname === item.href;
 
-                  ${
-                    active
-                      ? "bg-gradient-to-r from-violet-600 to-purple-500 text-white"
-                      : "text-zinc-400 hover:bg-zinc-900 hover:text-white"
-                  }
-                `}
-              >
-                <Icon className="h-5 w-5" />
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`
+                flex
+                items-center
+                gap-3
+                rounded-2xl
+                px-5
+                py-4
+                transition-all
+                duration-300
 
-                <span>
-                  {menu.title}
-                </span>
+                ${
+                  active
+                    ? "bg-gradient-to-r from-violet-600 to-fuchsia-500 text-white shadow-lg"
+                    : "text-zinc-400 hover:bg-zinc-900 hover:text-white"
+                }
+              `}
+            >
+              <Icon className="h-5 w-5" />
 
-              </Link>
-            );
-          })}
-
-        </nav>
-      </div>
-
-      {/* Wallet Mini */}
-
-      <div className="mt-auto pt-8">
-        <WalletCard />
-      </div>
-
+              <span className="font-medium">
+                {item.label}
+              </span>
+            </Link>
+          );
+        })}
+      </nav>
     </aside>
   );
 }
