@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 
+import { SendHorizonal } from "lucide-react";
+
 import RecipientInput from "./RecipientInput";
 import AmountInput from "./AmountInput";
 import TokenSelector from "./TokenSelector";
@@ -9,12 +11,16 @@ import SendInfo from "./SendInfo";
 import SendButton from "./SendButton";
 import SendSuccessModal from "./SendSuccessModal";
 
+import { useMounted } from "@/hooks/useMounted";
 import { useSend } from "@/hooks/useSend";
 import { useHistory } from "@/hooks/useHistory";
 import { useTokenBalance } from "@/hooks/useTokenBalance";
+
 import { getTokenBySymbol } from "@/lib/tokens";
 
 export default function SendCard() {
+  const mounted = useMounted();
+
   const [recipient, setRecipient] =
     useState("");
 
@@ -30,13 +36,31 @@ export default function SendCard() {
   const { addHistory } =
     useHistory();
 
+  // ==========================================
+  // Selected Token
+  // ==========================================
+
   const selectedToken =
     getTokenBySymbol(token);
 
-  const { balance } =
-    useTokenBalance({
-      token: selectedToken?.address,
-    });
+  // ==========================================
+  // Balance
+  // ==========================================
+
+  const {
+    balance,
+    loading: balanceLoading,
+  } = useTokenBalance({
+    token: selectedToken?.address,
+    decimals:
+      selectedToken?.decimals,
+    symbol:
+      selectedToken?.symbol,
+  });
+
+  // ==========================================
+  // Send Hook
+  // ==========================================
 
   const {
     send,
@@ -56,19 +80,30 @@ export default function SendCard() {
       addHistory({
         id: crypto.randomUUID(),
 
-        txHash: result.txHash,
+        type: "send",
 
-        fromToken: token,
+        txHash:
+          result.txHash,
 
-        toToken: "Wallet",
+        fromToken:
+          token,
 
-        fromAmount: amount,
+        toToken:
+          "Wallet",
 
-        toAmount: amount,
+        fromAmount:
+          amount,
 
-        status: "Completed",
+        toAmount:
+          amount,
 
-        timestamp: Date.now(),
+        recipient,
+
+        status:
+          "Completed",
+
+        timestamp:
+          Date.now(),
       });
 
       setRecipient("");
@@ -87,19 +122,46 @@ export default function SendCard() {
           max-w-md
           rounded-3xl
           border
-          border-zinc-800
-          bg-zinc-900/70
+          border-white/5
+          bg-[#171A23]/90
           p-6
           backdrop-blur-xl
         "
       >
-        <h2 className="text-3xl font-bold">
-          Send
-        </h2>
+        {/* Header */}
 
-        <p className="mt-2 text-sm text-zinc-500">
-          Send USDC or EURC to another wallet.
-        </p>
+        <div className="flex items-center gap-4">
+
+          <div
+            className="
+              flex
+              h-14
+              w-14
+              items-center
+              justify-center
+              rounded-2xl
+              bg-gradient-to-br
+              from-sky-500
+              to-violet-600
+              shadow-[0_0_30px_rgba(56,189,248,.30)]
+            "
+          >
+            <SendHorizonal className="h-7 w-7 text-white" />
+          </div>
+
+          <div>
+
+            <h2 className="text-4xl font-bold tracking-tight">
+              Send
+            </h2>
+
+            <p className="mt-1 text-sm text-zinc-400">
+              Transfer USDC securely to another wallet.
+            </p>
+
+          </div>
+
+        </div>
 
         <div className="mt-8 space-y-5">
 
@@ -116,6 +178,21 @@ export default function SendCard() {
           <AmountInput
             value={amount}
             onChange={setAmount}
+            balance={
+              mounted
+                ? balance
+                : 0
+            }
+            loading={
+              mounted
+                ? balanceLoading
+                : true
+            }
+            onMax={() =>
+              setAmount(
+                balance.toString(),
+              )
+            }
           />
 
           <SendInfo
@@ -147,7 +224,9 @@ export default function SendCard() {
 
           <SendButton
             loading={loading}
-            disabled={!validation.valid}
+            disabled={
+              !validation.valid
+            }
             onClick={send}
           >
             {status}

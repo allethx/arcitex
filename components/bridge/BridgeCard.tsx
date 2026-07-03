@@ -5,6 +5,7 @@ import {
   useState,
 } from "react";
 
+import BridgeHeader from "./BridgeHeader";
 import ChainSelector from "./ChainSelector";
 import TokenSelector from "./TokenSelector";
 import AmountInput from "./AmountInput";
@@ -15,19 +16,27 @@ import BridgeSuccessModal from "./BridgeSuccessModal";
 import { useBridge } from "@/hooks/useBridge";
 import { useHistory } from "@/hooks/useHistory";
 import { useTokenBalance } from "@/hooks/useTokenBalance";
-import { getTokenBySymbol } from "@/lib/tokens";
+import { useAutoSwitchNetwork } from "@/hooks/useAutoSwitchNetwork";
+import { useCurrentUsdc } from "@/hooks/useCurrentUsdc";
+
+import {
+  type SupportedChain,
+} from "@/lib/tokens";
 
 const DEFAULT_TOKEN = "USDC";
 
 export default function BridgeCard() {
-  const mounted =
-    useMounted();
+  const mounted = useMounted();
 
   const [fromChain, setFromChain] =
-    useState("Arc_Testnet");
+    useState<SupportedChain>(
+      "Arc_Testnet",
+    );
 
   const [toChain, setToChain] =
-    useState("Ethereum_Sepolia");
+    useState<SupportedChain>(
+      "Ethereum_Sepolia",
+    );
 
   const [token, setToken] =
     useState(DEFAULT_TOKEN);
@@ -38,25 +47,49 @@ export default function BridgeCard() {
   const [openSuccess, setOpenSuccess] =
     useState(false);
 
+  // ==========================================
+  // Auto Switch Network
+  // ==========================================
+
+  useAutoSwitchNetwork({
+    chain: fromChain,
+  });
+
   const { addHistory } =
     useHistory();
 
-  const selectedToken =
-    getTokenBySymbol(token);
+  // ==========================================
+  // Current USDC
+  // ==========================================
 
-  const { balance } =
-    useTokenBalance({
-      token: selectedToken?.address,
-    });
+  const usdc =
+    useCurrentUsdc();
+
+  // ==========================================
+  // Balance
+  // ==========================================
 
   const {
-  bridge,
-  loading,
-  status,
-  validation,
-  error,
-  result,
-  estimate,
+    balance,
+    loading: balanceLoading,
+  } = useTokenBalance({
+    token: usdc?.address,
+    decimals: usdc?.decimals,
+    symbol: usdc?.symbol,
+  });
+
+  // ==========================================
+  // Bridge Hook
+  // ==========================================
+
+  const {
+    bridge,
+    loading,
+    status,
+    validation,
+    error,
+    result,
+    estimate,
   } = useBridge({
     fromChain,
     toChain,
@@ -68,6 +101,8 @@ export default function BridgeCard() {
       addHistory({
         id: crypto.randomUUID(),
 
+        type: "bridge",
+
         txHash:
           result?.txHash ?? "",
 
@@ -78,6 +113,10 @@ export default function BridgeCard() {
         fromAmount: amount,
 
         toAmount: amount,
+
+        fromChain,
+
+        toChain,
 
         status: "Completed",
 
@@ -97,35 +136,49 @@ export default function BridgeCard() {
       <div
         className="
           w-full
-          max-w-md
+          max-w-[430px]
           rounded-3xl
           border
-          border-zinc-800
-          bg-zinc-900/70
+          border-white/5
+          bg-[#171A23]/90
           p-6
           backdrop-blur-xl
         "
       >
-        <h2 className="text-3xl font-bold">
-          Bridge
-        </h2>
+        <BridgeHeader />
 
-        <p className="mt-2 text-sm text-zinc-500">
-          Move your USDC across supported blockchains.
-        </p>
-
-        <div className="mt-8 space-y-5">
+        <div className="mt-6 space-y-4">
 
           <ChainSelector
-            label="From Chain"
+            label="From"
             value={fromChain}
-            onChange={setFromChain}
+            onChange={(value) =>
+              setFromChain(
+                value as SupportedChain,
+              )
+            }
           />
 
           <ChainSelector
-            label="To Chain"
+            label="To"
             value={toChain}
-            onChange={setToChain}
+            onChange={(value) =>
+              setToChain(
+                value as SupportedChain,
+              )
+            }
+          />
+
+          <AmountInput
+            value={amount}
+            onChange={setAmount}
+            balance={balance}
+            loading={balanceLoading}
+            onMax={() =>
+              setAmount(
+                balance.toString(),
+              )
+            }
           />
 
           <TokenSelector
@@ -133,22 +186,17 @@ export default function BridgeCard() {
             onChange={setToken}
           />
 
-          <AmountInput
-            value={amount}
-            onChange={setAmount}
-          />
-
           <BridgeInfo
-  estimate={estimate}
-/>
+            estimate={estimate}
+          />
 
           {mounted &&
             error && (
               <div
                 className="
-                  rounded-xl
+                  rounded-2xl
                   border
-                  border-red-500/30
+                  border-red-500/20
                   bg-red-500/10
                   px-4
                   py-3
@@ -165,9 +213,9 @@ export default function BridgeCard() {
             !validation.valid && (
               <div
                 className="
-                  rounded-xl
+                  rounded-2xl
                   border
-                  border-red-500/30
+                  border-red-500/20
                   bg-red-500/10
                   px-4
                   py-3

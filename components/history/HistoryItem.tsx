@@ -1,6 +1,14 @@
 "use client";
 
-import { ExternalLink, CheckCircle2 } from "lucide-react";
+import {
+  ArrowLeftRight,
+  SendHorizontal,
+ GitBranchPlus,
+  Gift,
+  Vote,
+  CheckCircle2,
+  ExternalLink,
+} from "lucide-react";
 
 import type { TransactionHistory } from "@/types/transaction";
 
@@ -8,9 +16,59 @@ type Props = {
   item: TransactionHistory;
 };
 
+function getTypeInfo(type?: string) {
+  switch (type) {
+    case "swap":
+      return {
+        icon: ArrowLeftRight,
+        label: "Swap",
+        color: "text-violet-400",
+      };
+
+    case "send":
+      return {
+        icon: SendHorizontal,
+        label: "Send",
+        color: "text-sky-400",
+      };
+
+    case "bridge":
+      return {
+        icon: GitBranchPlus,
+        label: "Bridge",
+        color: "text-cyan-400",
+      };
+
+    case "claim":
+      return {
+        icon: Gift,
+        label: "Claim",
+        color: "text-emerald-400",
+      };
+
+    case "vote":
+      return {
+        icon: Vote,
+        label: "Governance",
+        color: "text-amber-400",
+      };
+
+    default:
+      return {
+        icon: ArrowLeftRight,
+        label: "Transaction",
+        color: "text-zinc-400",
+      };
+  }
+}
+
 export default function HistoryItem({
   item,
 }: Props) {
+  const info = getTypeInfo(item.type);
+
+  const Icon = info.icon;
+
   return (
     <div
       className="
@@ -19,32 +77,135 @@ export default function HistoryItem({
         border-zinc-700
         bg-zinc-900
         p-5
+        transition
+        hover:border-cyan-500/30
       "
     >
-      <div className="flex items-center justify-between">
+      {/* Header */}
 
-        <div className="flex items-center gap-3">
-          <CheckCircle2
-            className="text-green-400"
-            size={22}
-          />
+      <div className="flex items-start justify-between">
+
+        <div className="flex items-start gap-3">
+
+          <div
+            className="
+              flex
+              h-11
+              w-11
+              items-center
+              justify-center
+              rounded-xl
+              bg-gradient-to-br
+              from-sky-500
+              to-violet-600
+            "
+          >
+            <Icon className="h-5 w-5 text-white" />
+          </div>
 
           <div>
-            <p className="font-semibold text-white">
-              {item.fromToken} → {item.toToken}
+
+            <p
+              className={`text-sm font-semibold ${info.color}`}
+            >
+              {info.label}
+            </p>
+
+            <p className="mt-1 font-semibold text-white">
+              {item.fromToken}
+              {item.toToken &&
+                ` → ${item.toToken}`}
             </p>
 
             <p className="text-sm text-zinc-400">
-              {item.fromAmount} → {item.toAmount}
+              {item.fromAmount}
+
+              {item.toAmount &&
+                ` → ${item.toAmount}`}
             </p>
+
           </div>
+
         </div>
 
-        <span className="text-sm text-green-400">
-          {item.status}
-        </span>
+        <div className="flex items-center gap-2">
+
+          <CheckCircle2
+            size={18}
+            className="text-green-400"
+          />
+
+          <span className="text-sm font-medium text-green-400">
+            {item.status}
+          </span>
+
+        </div>
 
       </div>
+
+      {/* Extra Information */}
+
+      {item.type === "send" &&
+        item.recipient && (
+          <div className="mt-5">
+            <p className="text-xs text-zinc-500">
+              Recipient
+            </p>
+
+            <p className="mt-1 break-all text-sm text-white">
+              {item.recipient}
+            </p>
+          </div>
+        )}
+
+      {item.type === "bridge" &&
+        item.fromChain &&
+        item.toChain && (
+          <div className="mt-5 flex items-center justify-between rounded-xl bg-zinc-950 px-4 py-3">
+
+            <span className="text-sm text-zinc-300">
+              {item.fromChain}
+            </span>
+
+            <span className="text-zinc-500">
+              →
+            </span>
+
+            <span className="text-sm text-zinc-300">
+              {item.toChain}
+            </span>
+
+          </div>
+        )}
+
+      {item.type === "vote" &&
+        item.proposal && (
+          <div className="mt-5 rounded-xl bg-zinc-950 p-4">
+
+            <p className="text-xs text-zinc-500">
+              Proposal
+            </p>
+
+            <p className="mt-1 text-sm text-white">
+              {item.proposal}
+            </p>
+
+            {item.vote && (
+              <span
+                className={`mt-3 inline-flex rounded-full px-3 py-1 text-xs font-semibold ${
+                  item.vote === "YES"
+                    ? "bg-emerald-500/15 text-emerald-400"
+                    : "bg-red-500/15 text-red-400"
+                }`}
+              >
+                Vote {item.vote}
+              </span>
+            )}
+
+          </div>
+        )}
+
+      {/* Footer */}
 
       <div className="mt-5 flex items-center justify-between">
 
@@ -55,6 +216,7 @@ export default function HistoryItem({
         </span>
 
         <button
+          type="button"
           onClick={() =>
             window.open(
               `https://testnet.arcscan.app/tx/${item.txHash}`,
@@ -67,6 +229,7 @@ export default function HistoryItem({
             gap-2
             text-sm
             text-cyan-400
+            transition
             hover:text-cyan-300
           "
         >
@@ -76,6 +239,7 @@ export default function HistoryItem({
         </button>
 
       </div>
+
     </div>
   );
 }

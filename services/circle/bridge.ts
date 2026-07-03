@@ -21,7 +21,7 @@ export async function executeBridge({
   fromChain,
   toChain,
   amount,
-}: ExecuteBridgeParams): Promise<BridgeResult> {
+}: ExecuteBridgeParams): Promise<any> {
   console.group(
     "========== EXECUTE BRIDGE =========="
   );
@@ -49,25 +49,101 @@ export async function executeBridge({
     token: "USDC",
   };
 
-  console.log("Bridge Params");
+  console.log("========== BRIDGE PARAMS ==========");
+
   console.dir(params, {
     depth: null,
   });
 
-  console.log("Calling Circle SDK...");
+  console.log(
+    "Calling Circle SDK..."
+  );
 
-  let result =
+  let result: BridgeResult =
     await circleClient.bridge(
       params,
     );
 
-  console.log(
-    "========== BRIDGE RESULT =========="
+  // ==========================================
+  // FULL RESULT
+  // ==========================================
+
+  console.group(
+    "========== FULL BRIDGE RESULT =========="
   );
 
+  console.log("State:");
+  console.log(result.state);
+
+  console.log("Result:");
   console.dir(result, {
     depth: null,
   });
+
+  console.groupEnd();
+
+  // ==========================================
+  // STEPS
+  // ==========================================
+
+  if ("steps" in result) {
+    console.group(
+      "========== BRIDGE STEPS =========="
+    );
+
+    result.steps.forEach(
+      (
+        step: any,
+        index: number,
+      ) => {
+        console.group(
+          `STEP ${index}`
+        );
+
+        console.log(
+          "Name:",
+          step.name,
+        );
+
+        console.log(
+          "State:",
+          step.state,
+        );
+
+        console.log(
+          "Status:",
+          step.status,
+        );
+
+        console.log(
+          "TxHash:",
+          step.txHash,
+        );
+
+        console.log(
+          "Explorer:",
+          step.explorerUrl,
+        );
+
+        console.log(
+          "Error:",
+          step.error,
+        );
+
+        console.dir(step, {
+          depth: null,
+        });
+
+        console.groupEnd();
+      },
+    );
+
+    console.groupEnd();
+  }
+
+  // ==========================================
+  // RETRY
+  // ==========================================
 
   if (result.state === "error") {
     console.warn(
@@ -83,16 +159,64 @@ export async function executeBridge({
         },
       );
 
-    console.log(
+    console.group(
       "========== RETRY RESULT =========="
     );
 
     console.dir(result, {
       depth: null,
     });
+
+    console.groupEnd();
   }
+
+  // ==========================================
+  // MINT STEP
+  // ==========================================
+
+  const mintStep =
+    result.steps?.find(
+      (step: any) =>
+        step.name === "mint",
+    );
+
+  const txHash =
+    mintStep?.txHash ??
+    mintStep?.data?.txHash ??
+    "";
+
+  const explorerUrl =
+    mintStep?.explorerUrl ??
+    "";
+
+  console.group(
+    "========== FINAL BRIDGE =========="
+  );
+
+  console.log({
+    state: result.state,
+    txHash,
+    explorerUrl,
+  });
 
   console.groupEnd();
 
-  return result;
+  console.groupEnd();
+
+  return {
+    ...result,
+
+    txHash,
+
+    explorerUrl,
+
+    status:
+      result.state ===
+      "success"
+        ? "Completed"
+        : result.state ===
+            "error"
+          ? "Failed"
+          : "Pending",
+  };
 }

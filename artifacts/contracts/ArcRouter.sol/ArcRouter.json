@@ -177,7 +177,7 @@
   "linkReferences": {},
   "deployedLinkReferences": {},
   "immutableReferences": {
-    "264": [
+    "988": [
       {
         "length": 32,
         "start": 131
@@ -197,5 +197,5 @@
     ]
   },
   "inputSourceName": "project/contracts/ArcRouter.sol",
-  "buildInfoId": "solc-0_8_28-5cd10fa30140d1b79e7ee38ac501e23d92e08737"
+  "buildInfoId": "solc-0_8_28-bf8a5d01d7a9c06f1ae3c77ef86d5f1589c3016d"
 }

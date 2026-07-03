@@ -1,5 +1,8 @@
 import { defineChain } from "viem";
-import { base, sepolia } from "wagmi/chains";
+import {
+  baseSepolia,
+  sepolia,
+} from "wagmi/chains";
 
 export const arcTestnet = defineChain({
   id: 5042002,
@@ -11,13 +14,13 @@ export const arcTestnet = defineChain({
   nativeCurrency: {
     name: "USDC",
     symbol: "USDC",
-    decimals: 18,
+    decimals: 6,
   },
 
   rpcUrls: {
     default: {
       http: [
-        "https://arc-testnet.drpc.org",
+        "https://rpc.testnet.arc.network",
       ],
     },
   },
@@ -34,8 +37,9 @@ export const arcTestnet = defineChain({
 
 export const supportedChains = [
   arcTestnet,
-  base,
+  baseSepolia,
   sepolia,
 ] as const;
 
-export const defaultChain = arcTestnet;
+export const defaultChain =
+  arcTestnet;

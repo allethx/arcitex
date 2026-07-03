@@ -47,6 +47,7 @@
     "forge-std": "github:foundry-rs/forge-std#v1.9.4",
     "hardhat": "^3.9.0",
     "tailwindcss": "^4",
+    "tsx": "^4.22.5",
     "typescript": "~6.0.3"
   },
   "type": "module"

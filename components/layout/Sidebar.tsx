@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -10,7 +11,7 @@ import {
   BriefcaseBusiness,
   History,
   Droplets,
-  Settings,
+  Landmark,
 } from "lucide-react";
 
 const menus = [
@@ -43,11 +44,12 @@ const menus = [
     href: "/app/pools",
     label: "Pools",
     icon: Droplets,
+    comingSoon: true,
   },
   {
-    href: "/app/settings",
-    label: "Settings",
-    icon: Settings,
+    href: "/app/governance",
+    label: "Governance",
+    icon: Landmark,
   },
 ];
 
@@ -55,47 +57,56 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="flex w-60 flex-col">
-
+    <aside
+      className="
+        fixed
+        left-0
+        top-0
+        z-40
+        flex
+        h-screen
+        w-72
+        flex-col
+        border-r
+        border-white/5
+        bg-[#080A12]
+        px-6
+        py-8
+      "
+    >
       {/* Logo */}
 
       <Link
         href="/app"
-        className="mb-12 flex items-center gap-3"
+        className="flex items-center gap-4"
       >
-        <div
-          className="
-            flex
-            h-12
-            w-12
-            items-center
-            justify-center
-            rounded-full
-            bg-gradient-to-br
-            from-violet-500
-            to-sky-500
-            text-lg
-            font-bold
-            text-white
-          "
-        >
-          A
-        </div>
+        <Image
+          src="/logo1.png"
+          alt="Arcitex"
+          width={54}
+          height={54}
+          priority
+          className="rounded-xl"
+        />
 
         <div>
-          <h1 className="text-2xl font-bold">
-            Arcitex
+          <h1 className="text-2xl font-bold tracking-wide">
+            ARCITEX
           </h1>
 
-          <p className="text-sm text-zinc-500">
-            Smart Cross-chain Exchange
+          <p className="mt-1 text-xs text-white">
+            The Gateway to Trading on ARC
           </p>
         </div>
       </Link>
 
+      {/* Divider */}
+
+      <div className="my-8 h-px bg-white/5" />
+
       {/* Navigation */}
 
-      <nav className="space-y-2">
+      <nav className="flex-1 space-y-2">
         {menus.map((item) => {
           const Icon = item.icon;
 
@@ -107,31 +118,87 @@ export default function Sidebar() {
               key={item.href}
               href={item.href}
               className={`
+                group
                 flex
                 items-center
-                gap-3
+                justify-between
                 rounded-2xl
                 px-5
                 py-4
                 transition-all
-                duration-300
+                duration-200
 
                 ${
                   active
-                    ? "bg-gradient-to-r from-violet-600 to-fuchsia-500 text-white shadow-lg"
-                    : "text-zinc-400 hover:bg-zinc-900 hover:text-white"
+                    ? `
+                      bg-gradient-to-r
+                      from-sky-500
+                      to-violet-600
+                      text-white
+                      shadow-lg
+                      shadow-sky-500/20
+                    `
+                    : `
+                      text-zinc-400
+                      hover:bg-white/5
+                      hover:text-white
+                    `
                 }
               `}
             >
-              <Icon className="h-5 w-5" />
+              <div className="flex items-center gap-4">
+                <Icon className="h-5 w-5 shrink-0" />
 
-              <span className="font-medium">
-                {item.label}
-              </span>
+                <span className="font-medium">
+                  {item.label}
+                </span>
+              </div>
+
+              {item.comingSoon && (
+                <span
+                  className="
+                    rounded-full
+                    bg-sky-500/15
+                    px-2
+                    py-1
+                    text-[10px]
+                    font-semibold
+                    uppercase
+                    tracking-wide
+                    text-sky-300
+                  "
+                >
+                  Coming Soon
+                </span>
+              )}
             </Link>
           );
         })}
       </nav>
+
+      {/* Footer */}
+
+      <div
+        className="
+          rounded-2xl
+          border
+          border-emerald-500/20
+          bg-emerald-500/10
+          p-4
+        "
+      >
+        <div className="flex items-center gap-2">
+          <span className="h-2 w-2 rounded-full bg-emerald-400" />
+
+          <p className="text-sm font-medium text-emerald-300">
+            Connected
+          </p>
+        </div>
+
+        <p className="mt-2 text-xs text-zinc-400">
+          Powered by Arcitex
+        </p>
+      </div>
     </aside>
   );
 }

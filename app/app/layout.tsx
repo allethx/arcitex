@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 
+import Background from "@/components/layout/Background";
 import Sidebar from "@/components/layout/Sidebar";
 import Topbar from "@/components/layout/Topbar";
 
@@ -9,26 +10,41 @@ export default function DashboardLayout({
   children: ReactNode;
 }) {
   return (
-    <main className="min-h-screen bg-black text-white">
-      <div className="mx-auto flex max-w-7xl gap-8 p-8">
+    <main
+      className="
+        relative
+        min-h-screen
+        overflow-hidden
+        text-white
+      "
+    >
+      {/* Background */}
 
-        {/* Sidebar */}
+      <Background />
 
-        <Sidebar />
+      {/* Sidebar */}
 
-        {/* Main Content */}
+      <Sidebar />
 
-        <section className="flex flex-1 flex-col">
+      {/* Topbar */}
 
-          <Topbar />
+      <Topbar />
 
-          <div className="mt-8 flex-1">
-            {children}
-          </div>
+      {/* Content */}
 
-        </section>
-
-      </div>
+      <section
+        className="
+          relative
+          ml-72
+          h-screen
+          overflow-y-auto
+          px-8
+          pt-24
+          pb-8
+        "
+      >
+        {children}
+      </section>
     </main>
   );
 }

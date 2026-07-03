@@ -1,14 +1,12 @@
 {
   "_format": "hh3-sol-build-info-1",
-  "id": "solc-0_8_28-5cd10fa30140d1b79e7ee38ac501e23d92e08737",
+  "id": "solc-0_8_28-fe4914af95490e53e853a89cbb3df67778d63e32",
   "solcVersion": "0.8.28",
   "solcLongVersion": "0.8.28+commit.7893614a",
   "compilerType": "solc",
-  "toolVersions": {
-    "hardhat": "3.9.0"
-  },
   "userSourceNameMap": {
-    "contracts/ArcRouter.sol": "project/contracts/ArcRouter.sol"
+    "contracts/SimpleGovernance.sol": "project/contracts/SimpleGovernance.sol",
+    "contracts/TexClaim.sol": "project/contracts/TexClaim.sol"
   },
   "input": {
     "language": "Solidity",
@@ -52,8 +50,11 @@
       "npm/@openzeppelin/contracts@5.6.1/utils/Context.sol": {
         "content": "// SPDX-License-Identifier: MIT\n// OpenZeppelin Contracts (last updated v5.0.1) (utils/Context.sol)\n\npragma solidity ^0.8.20;\n\n/**\n * @dev Provides information about the current execution context, including the\n * sender of the transaction and its data. While these are generally available\n * via msg.sender and msg.data, they should not be accessed in such a direct\n * manner, since when dealing with meta-transactions the account sending and\n * paying for execution may not be the actual sender (as far as an application\n * is concerned).\n *\n * This contract is only required for intermediate, library-like contracts.\n */\nabstract contract Context {\n    function _msgSender() internal view virtual returns (address) {\n        return msg.sender;\n    }\n\n    function _msgData() internal view virtual returns (bytes calldata) {\n        return msg.data;\n    }\n\n    function _contextSuffixLength() internal view virtual returns (uint256) {\n        return 0;\n    }\n}\n"
       },
-      "project/contracts/ArcRouter.sol": {
-        "content": "// SPDX-License-Identifier: MIT\r\npragma solidity ^0.8.28;\r\n\r\nimport \"@openzeppelin/contracts/token/ERC20/IERC20.sol\";\r\nimport \"@openzeppelin/contracts/access/Ownable.sol\";\r\n\r\ncontract ArcRouter is Ownable {\r\n    IERC20 public immutable eurc;\r\n\r\n    event SwapExecuted(\r\n        address indexed user,\r\n        uint256 amountIn,\r\n        uint256 amountOut,\r\n        uint256 timestamp\r\n    );\r\n\r\n    constructor(address _eurc)\r\n        Ownable(msg.sender)\r\n    {\r\n        eurc = IERC20(_eurc);\r\n    }\r\n\r\n    function swap(\r\n        uint256 amount\r\n    ) external {\r\n        require(\r\n            amount > 0,\r\n            \"Invalid amount\"\r\n        );\r\n\r\n        bool success =\r\n            eurc.transferFrom(\r\n                msg.sender,\r\n                address(this),\r\n                amount\r\n            );\r\n\r\n        require(\r\n            success,\r\n            \"Transfer failed\"\r\n        );\r\n\r\n        emit SwapExecuted(\r\n            msg.sender,\r\n            amount,\r\n            amount,\r\n            block.timestamp\r\n        );\r\n    }\r\n\r\n    function withdrawEURC(\r\n        uint256 amount\r\n    ) external onlyOwner {\r\n        eurc.transfer(\r\n            owner(),\r\n            amount\r\n        );\r\n    }\r\n\r\n    function eurcBalance()\r\n        external\r\n        view\r\n        returns (uint256)\r\n    {\r\n        return eurc.balanceOf(\r\n            address(this)\r\n        );\r\n    }\r\n}"
+      "project/contracts/SimpleGovernance.sol": {
+        "content": ""
+      },
+      "project/contracts/TexClaim.sol": {
+        "content": "// SPDX-License-Identifier: MIT\r\npragma solidity ^0.8.24;\r\n\r\nimport \"@openzeppelin/contracts/access/Ownable.sol\";\r\nimport \"@openzeppelin/contracts/token/ERC20/IERC20.sol\";\r\n\r\ninterface ITexToken {\r\n    function mint(\r\n        address to,\r\n        uint256 amount\r\n    ) external;\r\n}\r\n\r\ncontract TexClaim is Ownable {\r\n    IERC20 public immutable usdc;\r\n\r\n    ITexToken public immutable tex;\r\n\r\n    uint256 public constant MIN_USDC = 50 * 1e6;\r\n\r\n    uint256 public constant CLAIM_AMOUNT =\r\n        100 * 1e18;\r\n\r\n    mapping(address => bool)\r\n        public claimed;\r\n\r\n    event Claimed(\r\n        address indexed user,\r\n        uint256 amount\r\n    );\r\n\r\n    constructor(\r\n        address usdcAddress,\r\n        address texAddress,\r\n        address owner\r\n    ) Ownable(owner) {\r\n        usdc = IERC20(usdcAddress);\r\n\r\n        tex = ITexToken(texAddress);\r\n    }\r\n\r\n    function claim() external {\r\n        require(\r\n            !claimed[msg.sender],\r\n            \"Already claimed\"\r\n        );\r\n\r\n        require(\r\n            usdc.balanceOf(msg.sender) >=\r\n                MIN_USDC,\r\n            \"Need at least 50 USDC\"\r\n        );\r\n\r\n        claimed[msg.sender] = true;\r\n\r\n        tex.mint(\r\n            msg.sender,\r\n            CLAIM_AMOUNT\r\n        );\r\n\r\n        emit Claimed(\r\n            msg.sender,\r\n            CLAIM_AMOUNT\r\n        );\r\n    }\r\n\r\n    function canClaim(\r\n        address user\r\n    )\r\n        external\r\n        view\r\n        returns (bool)\r\n    {\r\n        return\r\n            !claimed[user] &&\r\n            usdc.balanceOf(user) >=\r\n            MIN_USDC;\r\n    }\r\n}"
       }
     }
   }

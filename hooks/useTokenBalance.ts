@@ -9,8 +9,6 @@ import {
 
 import { formatUnits } from "viem";
 
-import { getTokenByAddress } from "@/lib/tokens";
-
 const ERC20_ABI = [
   {
     type: "function",
@@ -33,22 +31,16 @@ const ERC20_ABI = [
 
 type Props = {
   token?: `0x${string}`;
+  decimals?: number;
+  symbol?: string;
 };
 
 export function useTokenBalance({
   token,
+  decimals = 6,
+  symbol = "",
 }: Props) {
   const account = useAccount();
-
-  const metadata = token
-    ? getTokenByAddress(token)
-    : undefined;
-
-  const decimals =
-    metadata?.decimals ?? 6;
-
-  const symbol =
-    metadata?.symbol ?? "";
 
   const {
     data: rawBalance,
@@ -61,9 +53,9 @@ export function useTokenBalance({
       ? [account.address]
       : undefined,
     query: {
-      enabled: Boolean(
-        token && account.address
-      ),
+      enabled:
+        Boolean(token) &&
+        Boolean(account.address),
     },
   });
 
@@ -75,10 +67,13 @@ export function useTokenBalance({
     return Number(
       formatUnits(
         rawBalance,
-        decimals
-      )
+        decimals,
+      ),
     );
-  }, [rawBalance, decimals]);
+  }, [
+    rawBalance,
+    decimals,
+  ]);
 
   console.log("TOKEN HOOK", {
     address: account.address,
@@ -95,7 +90,8 @@ export function useTokenBalance({
     decimals,
     symbol,
     loading: isLoading,
-    connected: account.isConnected,
+    connected:
+      account.isConnected,
     chain: account.chain,
   };
 }

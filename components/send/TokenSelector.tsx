@@ -46,9 +46,7 @@ export default function TokenSelector({
         </option>
       </select>
 
-      <p className="mt-2 text-xs text-zinc-500">
-        Only USDC is currently supported for Send on Arc Testnet.
-      </p>
+      
     </div>
   );
 }

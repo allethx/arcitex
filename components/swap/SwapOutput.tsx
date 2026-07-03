@@ -14,26 +14,48 @@ export default function SwapOutput({
   onSelect,
 }: Props) {
   return (
-    <div className="mt-4 rounded-2xl bg-zinc-800 p-4">
+    <div
+      className="
+        mt-4
+        rounded-3xl
+        border
+        border-white/5
+        bg-[#171A23]
+        px-5
+        py-4
+        transition-all
+        hover:border-violet-500/20
+      "
+    >
+      {/* Header */}
 
-      <p className="mb-2 text-sm text-zinc-400">
-        You Receive
-      </p>
+      <div className="mb-3 flex items-center justify-between">
+        <p className="text-sm font-medium text-zinc-400">
+          You Receive
+        </p>
+
+        <p className="text-xs text-zinc-500">
+          Estimated
+        </p>
+      </div>
+
+      {/* Body */}
 
       <div className="flex items-center justify-between gap-4">
-
         <input
           value={value}
           readOnly
-          placeholder="0.0"
+          placeholder="0.00"
           className="
             w-full
-            bg-transparent
-            text-3xl
-            font-semibold
-            outline-none
-            placeholder:text-zinc-500
             cursor-default
+            bg-transparent
+            text-4xl
+            font-bold
+            tracking-tight
+            text-white
+            outline-none
+            placeholder:text-zinc-600
           "
         />
 
@@ -41,9 +63,7 @@ export default function SwapOutput({
           symbol={token}
           onClick={onSelect}
         />
-
       </div>
-
     </div>
   );
 }

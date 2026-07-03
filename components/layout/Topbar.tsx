@@ -1,6 +1,9 @@
 "use client";
 
-import { Bell, Search } from "lucide-react";
+import {
+  Bell,
+  Search,
+} from "lucide-react";
 
 import ConnectWalletButton from "@/components/wallet/ConnectWalletButton";
 
@@ -8,37 +11,41 @@ export default function Topbar() {
   return (
     <header
       className="
-        mb-8
-        flex
-        items-center
-        justify-between
-        rounded-3xl
-        border
-        border-zinc-800
-        bg-zinc-900/70
-        p-5
+        fixed
+        left-72
+        right-0
+        top-0
+        z-50
+        h-20
+        border-b
+        border-white/5
+        bg-[#06070D]/80
         backdrop-blur-xl
       "
     >
-      {/* Left */}
-
-      <div className="space-y-1">
-  
-</div>
-
-      {/* Right */}
-
-      <div className="flex items-center gap-3">
-
+      <div
+        className="
+          flex
+          h-full
+          items-center
+          justify-end
+          gap-4
+          px-8
+        "
+      >
         <button
           className="
+            flex
+            h-11
+            w-11
+            items-center
+            justify-center
             rounded-2xl
             border
-            border-zinc-800
-            bg-zinc-900
-            p-3
+            border-white/5
+            bg-[#11131A]
             transition
-            hover:bg-zinc-800
+            hover:bg-[#171A23]
           "
         >
           <Search className="h-5 w-5" />
@@ -47,22 +54,35 @@ export default function Topbar() {
         <button
           className="
             relative
+            flex
+            h-11
+            w-11
+            items-center
+            justify-center
             rounded-2xl
             border
-            border-zinc-800
-            bg-zinc-900
-            p-3
+            border-white/5
+            bg-[#11131A]
             transition
-            hover:bg-zinc-800
+            hover:bg-[#171A23]
           "
         >
           <Bell className="h-5 w-5" />
 
-          <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-violet-500" />
+          <span
+            className="
+              absolute
+              right-3
+              top-3
+              h-2
+              w-2
+              rounded-full
+              bg-sky-400
+            "
+          />
         </button>
 
         <ConnectWalletButton />
-
       </div>
     </header>
   );

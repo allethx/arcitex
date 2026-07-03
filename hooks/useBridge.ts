@@ -232,17 +232,10 @@ export function useBridge({
     try {
       console.group("Bridge");
 
-      console.log("From");
-      console.log(fromChain);
-
-      console.log("To");
-      console.log(toChain);
-
-      console.log("Token");
-      console.log(token);
-
-      console.log("Amount");
-      console.log(amount);
+      console.log("From:", fromChain);
+      console.log("To:", toChain);
+      console.log("Token:", token);
+      console.log("Amount:", amount);
 
       const response =
         await executeBridge({
@@ -253,15 +246,39 @@ export function useBridge({
         });
 
       console.log("Bridge Result");
-      console.log(response);
+
+      console.dir(response, {
+        depth: null,
+      });
 
       console.groupEnd();
 
       setResult(response);
 
-      setStatus("Success");
+      // ==========================
+      // SUCCESS
+      // ==========================
 
-      onSuccess?.(response);
+      if (
+        response.state ===
+        "success"
+      ) {
+        setStatus("Success");
+
+        onSuccess?.(response);
+
+        return response;
+      }
+
+      // ==========================
+      // FAILED
+      // ==========================
+
+      setStatus("Failed");
+
+      setError(
+        "Bridge transaction failed."
+      );
 
       return response;
     } catch (err) {
@@ -275,7 +292,7 @@ export function useBridge({
       setError(
         err instanceof Error
           ? err.message
-          : "Bridge failed",
+          : "Bridge failed"
       );
     } finally {
       setLoading(false);
