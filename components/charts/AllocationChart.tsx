@@ -81,17 +81,19 @@ export default function AllocationChart({
               ))}
             </Pie>
 
-            <Tooltip
-              formatter={(value: number) =>
-                value.toFixed(4)
-              }
-              contentStyle={{
-                background: "#18181b",
-                border: "1px solid #3f3f46",
-                borderRadius: 12,
-                color: "#fff",
-              }}
-            />
+           <Tooltip
+  formatter={(value) => {
+    const num = Number(value ?? 0);
+    return [num.toFixed(4)];
+  }}
+  contentStyle={{
+    background: "#18181b",
+    border: "1px solid #3f3f46",
+    borderRadius: 12,
+    color: "#fff",
+  }}
+/>
+          
 
           </PieChart>
         </ResponsiveContainer>
