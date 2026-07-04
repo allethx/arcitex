@@ -53,7 +53,7 @@ export function installCircleProxy() {
         const request =
           new Request(
             rewritten,
-            input,
+            init,
           );
 
         return originalFetch(
