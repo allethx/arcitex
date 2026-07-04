@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   useAccount,
@@ -60,6 +60,7 @@ export function useVote(
 
   const {
     isLoading: confirming,
+    isSuccess: confirmed,
   } =
     useWaitForTransactionReceipt({
       hash: txHash,
@@ -67,33 +68,35 @@ export function useVote(
       query: {
         enabled: !!txHash,
       },
-
-      onSuccess() {
-        console.group(
-          "GOVERNANCE VOTE",
-        );
-
-        console.log(
-          "✅ Vote Confirmed",
-        );
-
-        console.log(
-          "Proposal:",
-          proposalId,
-        );
-
-        console.log(
-          "Tx:",
-          txHash,
-        );
-
-        console.groupEnd();
-
-        refetch();
-
-        onConfirmed?.();
-      },
     });
+
+  useEffect(() => {
+    if (!confirmed) return;
+
+    console.group(
+      "GOVERNANCE VOTE",
+    );
+
+    console.log(
+      "✅ Vote Confirmed",
+    );
+
+    console.log(
+      "Proposal:",
+      proposalId,
+    );
+
+    console.log(
+      "Tx:",
+      txHash,
+    );
+
+    console.groupEnd();
+
+    refetch();
+
+    onConfirmed?.();
+  }, [confirmed]);
 
   function voteYes() {
     console.log(
