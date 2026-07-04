@@ -10,7 +10,7 @@ import { useAppKitProvider } from "@reown/appkit/react";
 
 import { formatUnits } from "viem";
 
-import type { SwapStatusResult } from "@circle-fin/app-kit";
+
 
 import { useWallet } from "@/hooks/useWallet";
 
@@ -24,8 +24,8 @@ type UseSwapParams = {
   balance: number;
 
   onSuccess?: (
-    result: SwapStatusResult
-  ) => void;
+     result: any
+   ) => void;
 };
 
 export function useSwap({
