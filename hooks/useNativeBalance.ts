@@ -23,7 +23,7 @@ export function useNativeBalance() {
   return {
     balance,
     symbol: data?.symbol ?? "USDC",
-    decimals: data?.decimals ?? 18,
+    decimals: data?.decimals ?? 6,
     chain,
     loading: isLoading,
     connected: isConnected,

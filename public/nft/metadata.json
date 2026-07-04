@@ -1,0 +1,24 @@
+{
+  "name": "Arcitex Early Access NFT",
+  "description": "Official Genesis Membership NFT of Arcitex. Hold this NFT to unlock early access, exclusive governance privileges, premium community rewards, and future ecosystem benefits.",
+  "image": "http://localhost:3000/nft/artwork.png",
+  "external_url": "http://localhost:3000",
+  "attributes": [
+    {
+      "trait_type": "Collection",
+      "value": "Genesis"
+    },
+    {
+      "trait_type": "Membership",
+      "value": "Early Access"
+    },
+    {
+      "trait_type": "Mint Price",
+      "value": "55 USDC"
+    },
+    {
+      "trait_type": "Network",
+      "value": "Arc Testnet"
+    }
+  ]
+}

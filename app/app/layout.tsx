@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-import Background from "@/components/layout/Background";
+import Background from "@/components/ui/BackgroundFX";
 import Sidebar from "@/components/layout/Sidebar";
 import Topbar from "@/components/layout/Topbar";
 

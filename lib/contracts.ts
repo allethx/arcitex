@@ -13,6 +13,9 @@ export const CONTRACTS = {
     "0x7d64f1f63867fba73f66844321bbb85e792901e4"
   ),
 
+  NFT: getAddress(
+"0x71767c20316c71aea96468eb5e1750a419c9f207"
+),
   CLAIM: getAddress(
     "0x95e746c28973012a0021b97dce7a39ab359363a9"
   ),

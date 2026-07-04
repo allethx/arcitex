@@ -128,3 +128,56 @@
     @apply font-sans;
   }
 }
+/* ============================================================
+   Append this block to your existing app/globals.css.
+   These keyframes power BackgroundFX, Hero, and NFTMembership.
+   ============================================================ */
+
+@keyframes arc-float {
+  0%   { transform: translateY(0) translateX(0);   opacity: 0; }
+  10%  { opacity: 0.6; }
+  90%  { opacity: 0.5; }
+  100% { transform: translateY(-120vh) translateX(20px); opacity: 0; }
+}
+
+@keyframes arc-pulse {
+  0%, 100% { opacity: 0.7; }
+  50%      { opacity: 1; }
+}
+
+@keyframes arc-floatcard {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-10px); }
+}
+
+@keyframes arc-shine {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -50% 0; }
+}
+
+@keyframes arc-travel {
+  0%   { top: -60px; }
+  100% { top: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+  
+/**
+ * ONLY needed if your package.json shows "tailwindcss": "^4.x.x".
+ * Tailwind v4 configures theme tokens in CSS instead of tailwind.config.ts.
+ * Add this @theme block into your globals.css, near the top,
+ * right after your `@import "tailwindcss";` line.
+ *
+ * If you're on Tailwind v3, ignore this file and use tailwind.config.ts instead.
+ */
+
+@theme {
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+}

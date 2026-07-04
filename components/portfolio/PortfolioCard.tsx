@@ -1,19 +1,19 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Wallet } from "lucide-react";
+import { useAccount } from "wagmi";
 
-import AssetRow from "@/components/portfolio/AssetRow";
-import PortfolioSummary from "@/components/portfolio/PortfolioSummary";
-import LastActivity from "@/components/portfolio/LastActivity";
-import AllocationChart from "@/components/charts/AllocationChart";
+import AssetAllocationCard from "@/components/portfolio/AssetAllocationCard";
+import NFTHoldings from "@/components/portfolio/NFTHoldings";
 
 import { useTokenBalance } from "@/hooks/useTokenBalance";
 import { getTokenBySymbol } from "@/lib/tokens";
-import { useTransactionHistory } from "@/hooks/useTransactionHistory";
+import { useNFT } from "@/hooks/useNFT";
 
 export default function PortfolioCard() {
   const mounted = useMounted();
+
+  const { address } = useAccount();
 
   const usdc = getTokenBySymbol("USDC");
   const eurc = getTokenBySymbol("EURC");
@@ -44,13 +44,7 @@ export default function PortfolioCard() {
       ? (eurcBalance / total) * 100
       : 0;
 
-  const history = useTransactionHistory();
-
-  const completedSwaps =
-    history.length;
-
-  const latest =
-    history[0];
+  const { nft } = useNFT();
 
   const formatBalance = (
     value: number
@@ -60,88 +54,43 @@ export default function PortfolioCard() {
       maximumFractionDigits: 4,
     }).format(value);
 
+  const usdcDisplay = !mounted
+    ? "--"
+    : usdcLoading
+    ? "Loading..."
+    : formatBalance(usdcBalance);
+
+  const eurcDisplay = !mounted
+    ? "--"
+    : eurcLoading
+    ? "Loading..."
+    : formatBalance(eurcBalance);
+
+  const totalDisplay = !mounted
+    ? "--"
+    : formatBalance(total);
+
   return (
-    <div
-      className="
-        w-full
-        rounded-3xl
-        border
-        border-zinc-800
-        bg-zinc-900/70
-        p-8
-        backdrop-blur-xl
-      "
-    >
-      {/* Header */}
+    <div className="grid gap-6 xl:grid-cols-2 xl:items-start">
 
+      <AssetAllocationCard
+        totalDisplay={totalDisplay}
+        usdcBalance={usdcBalance}
+        eurcBalance={eurcBalance}
+        usdcDisplay={usdcDisplay}
+        eurcDisplay={eurcDisplay}
+        usdcPercent={usdcPercent}
+        eurcPercent={eurcPercent}
+      />
 
-      {/* Top Section */}
-
-      <div className="grid gap-6 xl:grid-cols-2">
-
-        <AllocationChart
-          usdc={usdcBalance}
-          eurc={eurcBalance}
-        />
-
-        <div className="space-y-6">
-
-          <PortfolioSummary
-            totalAssets={
-              !mounted
-                ? "--"
-                : formatBalance(total)
-            }
-            completedSwaps={
-              completedSwaps
-            }
-          />
-
-          <LastActivity
-            latest={latest}
-          />
-
-        </div>
-
-      </div>
-
-      {/* Assets */}
-
-      <div className="mt-8 space-y-4">
-
-        <AssetRow
-          symbol="USDC"
-          name="USD Coin"
-          logo="/tokens/usdc.png"
-          balance={
-            !mounted
-              ? "--"
-              : usdcLoading
-              ? "Loading..."
-              : formatBalance(
-                  usdcBalance
-                )
-          }
-          percent={usdcPercent}
-        />
-
-        <AssetRow
-          symbol="EURC"
-          name="Euro Coin"
-          logo="/tokens/eurc.png"
-          balance={
-            !mounted
-              ? "--"
-              : eurcLoading
-              ? "Loading..."
-              : formatBalance(
-                  eurcBalance
-                )
-          }
-          percent={eurcPercent}
-        />
-
-      </div>
+      <NFTHoldings
+        hasNFT={
+          !mounted
+            ? false
+            : nft.hasNFT
+        }
+        address={address}
+      />
 
     </div>
   );
