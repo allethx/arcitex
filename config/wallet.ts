@@ -1,13 +1,13 @@
 import { createConfig, http } from "wagmi";
-import { supportedChains } from "@/lib/chains";
+import { arcTestnet } from "@/lib/chains";
+import { baseSepolia, sepolia } from "wagmi/chains";
 
 export const wagmiConfig = createConfig({
-  chains: [...supportedChains],
+  chains: [arcTestnet, baseSepolia, sepolia],
 
-  transports: Object.fromEntries(
-    supportedChains.map((chain) => [
-      chain.id,
-      http(),
-    ])
-  ),
+  transports: {
+    [arcTestnet.id]: http(),
+    [baseSepolia.id]: http(),
+    [sepolia.id]: http(),
+  },
 });
