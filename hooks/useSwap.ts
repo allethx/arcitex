@@ -10,6 +10,8 @@ import { useAppKitProvider } from "@reown/appkit/react";
 
 import { formatUnits } from "viem";
 
+import type { SwapStatusResult } from "@circle-fin/app-kit";
+
 import { useWallet } from "@/hooks/useWallet";
 
 import { estimateCircleSwap } from "@/services/circle/quote";
