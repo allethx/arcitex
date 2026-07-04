@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import { useAccount, useBalance } from "wagmi";
+import { formatUnits } from "viem";
 
 export function useNativeBalance() {
   const { address, isConnected, chain } = useAccount();
@@ -16,7 +17,7 @@ export function useNativeBalance() {
   const balance = useMemo(() => {
   if (!data) return 0;
 
-  const value = Number(data.formatted);
+  const value = Number(formatUnits(data.value, data.decimals));
 
   return Number.isFinite(value) ? value : 0;
 }, [data]);
