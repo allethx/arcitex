@@ -10,8 +10,6 @@ import { useAppKitProvider } from "@reown/appkit/react";
 
 import { formatUnits } from "viem";
 
-
-
 import { useWallet } from "@/hooks/useWallet";
 
 import { estimateCircleSwap } from "@/services/circle/quote";
@@ -24,8 +22,8 @@ type UseSwapParams = {
   balance: number;
 
   onSuccess?: (
-     result: any
-   ) => void;
+    result: any
+  ) => void;
 };
 
 export function useSwap({
@@ -65,26 +63,28 @@ export function useSwap({
   // ==========================
 
   useEffect(() => {
+    const provider = walletProvider as any;
+
     console.group("Provider Audit");
 
     console.log(
       "exists:",
-      !!walletProvider,
+      !!provider,
     );
 
     console.log(
       "request:",
-      typeof walletProvider?.request,
+      typeof provider?.request,
     );
 
     console.log(
       "on:",
-      typeof walletProvider?.on,
+      typeof provider?.on,
     );
 
     console.log(
       "removeListener:",
-      typeof walletProvider?.removeListener,
+      typeof provider?.removeListener,
     );
 
     console.groupEnd();
