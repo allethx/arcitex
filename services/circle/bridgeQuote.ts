@@ -32,12 +32,12 @@ export async function estimateBridge({
   const params: BridgeParams = {
     from: {
       adapter,
-      chain: fromChain,
+      chain: fromChain as any,
     },
 
     to: {
       adapter,
-      chain: toChain,
+      chain: toChain as any,
     },
 
     amount,
