@@ -23,8 +23,7 @@ export async function executeCircleSend({
   token,
   amount,
 }: ExecuteCircleSendParams) {
-  const { kitKey } =
-    ensureCircleConfig();
+  ensureCircleConfig();
 
   const adapter =
     await createCircleAdapter(
@@ -42,10 +41,6 @@ export async function executeCircleSend({
     token,
 
     amount,
-
-    config: {
-      kitKey,
-    },
   };
 
   console.group(
