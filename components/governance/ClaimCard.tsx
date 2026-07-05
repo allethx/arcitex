@@ -18,6 +18,7 @@ export default function ClaimCard({
     claim,
     claimed,
     eligible,
+    hasNFT,
     loading,
   } = useClaim();
 
@@ -25,7 +26,8 @@ export default function ClaimCard({
     !mounted ||
     loading ||
     claimed ||
-    !eligible;
+    !eligible ||
+    !hasNFT;
 
   return (
     <div
@@ -107,6 +109,28 @@ export default function ClaimCard({
 
         <div className="flex items-center justify-between">
           <span className="text-zinc-500">
+            Arcitex NFT
+          </span>
+
+          <span
+            className={
+              !mounted
+                ? "text-zinc-400"
+                : hasNFT
+                ? "text-emerald-400"
+                : "text-red-400"
+            }
+          >
+            {!mounted
+              ? "..."
+              : hasNFT
+              ? "Owned"
+              : "Required"}
+          </span>
+        </div>
+
+        <div className="flex items-center justify-between">
+          <span className="text-zinc-500">
             Status
           </span>
 
@@ -116,7 +140,7 @@ export default function ClaimCard({
                 ? "text-zinc-400"
                 : claimed
                 ? "text-sky-400"
-                : eligible
+                : eligible && hasNFT
                 ? "text-emerald-400"
                 : "text-red-400"
             }
@@ -125,6 +149,8 @@ export default function ClaimCard({
               ? "Loading..."
               : claimed
               ? "Claimed"
+              : !hasNFT
+              ? "Need Arcitex NFT"
               : eligible
               ? "Eligible"
               : "Not Eligible"}
@@ -168,6 +194,8 @@ export default function ClaimCard({
           ? "Already Claimed"
           : loading
           ? "Claiming..."
+          : !hasNFT
+          ? "Requires Arcitex NFT"
           : "Claim 100 TEX"}
       </button>
     </div>

@@ -5,8 +5,8 @@ const nodes = [
   "Bridge",
   "Send",
   "Portfolio",
-  "Governance",
   "NFT Membership",
+  "Governance",
   "Pools (Coming Soon)",
   "Arcitex Pay (Coming Soon)",
 ];

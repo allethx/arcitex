@@ -9,8 +9,8 @@ const navItems = [
   { label: "Bridge", href: "app/bridge" },
   { label: "Send", href: "app/send" },
   { label: "Portfolio", href: "app/portfolio" },
-  { label: "Governance", href: "app/governance" },
   { label: "NFT", href: "app/nft" },
+  { label: "Governance", href: "app/governance" },
   { label: "Pools", href: "#", soon: true },
   { label: "Pay", href: "#", soon: true },
 ];

@@ -14,6 +14,7 @@ import {
 
 import { CONTRACTS } from "@/lib/contracts";
 import { texClaimAbi } from "@/lib/abi/texClaim";
+import { arcitexNFTAbi } from "@/lib/abi/arcitexNFT";
 
 export function useClaim() {
   const { address } = useAccount();
@@ -39,11 +40,30 @@ export function useClaim() {
   });
 
   // ==========================
+  // NFT Ownership (Arcitex NFT required to claim)
+  // ==========================
+
+  const {
+    data: nftBalance = 0n,
+    refetch: refetchNftBalance,
+  } = useReadContract({
+    address: CONTRACTS.NFT,
+    abi: arcitexNFTAbi,
+    functionName: "balanceOf",
+    args: address ? [address] : undefined,
+    query: {
+      enabled: !!address,
+    },
+  });
+
+  const hasNFT = Number(nftBalance) > 0;
+
+  // ==========================
   // Eligible
   // ==========================
 
   const {
-    data: eligible = false,
+    data: canClaimOnChain = false,
     refetch: refetchEligible,
   } = useReadContract({
     address: CONTRACTS.CLAIM,
@@ -54,6 +74,10 @@ export function useClaim() {
       enabled: !!address,
     },
   });
+
+  // Require both: the on-chain claim conditions (USDC balance, not yet
+  // claimed) AND holding an Arcitex NFT.
+  const eligible = Boolean(canClaimOnChain) && hasNFT;
 
   // ==========================
   // Debug
@@ -80,6 +104,11 @@ export function useClaim() {
     );
 
     console.log(
+      "Has NFT:",
+      hasNFT,
+    );
+
+    console.log(
       "Claimed:",
       claimed,
     );
@@ -93,6 +122,7 @@ export function useClaim() {
   }, [
     address,
     eligible,
+    hasNFT,
     claimed,
     txHash,
   ]);
@@ -132,10 +162,12 @@ export function useClaim() {
 
     refetchClaimed();
     refetchEligible();
+    refetchNftBalance();
   }, [
     isSuccess,
     refetchClaimed,
     refetchEligible,
+    refetchNftBalance,
   ]);
 
   // ==========================
@@ -143,6 +175,14 @@ export function useClaim() {
   // ==========================
 
   function claim() {
+    if (!hasNFT) {
+      console.warn(
+        "Claim blocked: wallet does not hold an Arcitex NFT",
+      );
+
+      return;
+    }
+
     console.log(
       "Calling TexClaim.claim()..."
     );
@@ -179,6 +219,8 @@ export function useClaim() {
     claimed,
 
     eligible,
+
+    hasNFT,
 
     txHash,
 

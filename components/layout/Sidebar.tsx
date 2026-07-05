@@ -35,26 +35,29 @@ const menus = [
     icon: GitBranch,
   },
   {
-    href: "/app/portfolio",
-    label: "Portfolio",
-    icon: BriefcaseBusiness,
-  },
-  {
-    href: "/app/governance",
-    label: "Governance",
-    icon: Landmark,
-  },
-  {
-    href: "/app/history",
-    label: "History",
-    icon: History,
-  },
-  {
     href: "/app/nft",
     label: "NFT",
     icon: ImageIcon,
     badgeText: "Live",
   },
+  {
+    href: "/app/governance",
+    label: "Governance",
+    icon: Landmark,
+    badgeText: "Live",
+  },
+  {
+    href: "/app/portfolio",
+    label: "Portfolio",
+    icon: BriefcaseBusiness,
+  },
+  
+  {
+    href: "/app/history",
+    label: "History",
+    icon: History,
+  },
+  
   {
     href: "/app/pools",
     label: "Pools",

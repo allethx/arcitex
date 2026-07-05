@@ -7,8 +7,8 @@ const phases: { phase: string; title: string; status: Status; label: string }[] 
   { phase: "PHASE 2", title: "Bridge", status: "done", label: "Completed" },
   { phase: "PHASE 3", title: "Send", status: "done", label: "Completed" },
   { phase: "PHASE 4", title: "Portfolio", status: "done", label: "Completed" },
-  { phase: "PHASE 5", title: "Governance", status: "done", label: "Completed" },
-  { phase: "PHASE 6", title: "NFT Membership", status: "progress", label: "In Development" },
+  { phase: "PHASE 5", title: "NFT Membership", status: "progress", label: "Live" },
+  { phase: "PHASE 6", title: "Governance", status: "progress", label: "Live" },
   { phase: "PHASE 7", title: "Liquidity Pools", status: "upcoming", label: "Coming Soon" },
   { phase: "PHASE 8", title: "Arcitex Pay", status: "upcoming", label: "Coming Soon" },
 ];
