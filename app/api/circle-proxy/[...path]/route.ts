@@ -18,11 +18,11 @@ console.log(url);
   const headers = new Headers();
  
     const kitKey =
-  process.env.NEXT_PUBLIC_CIRCLE_KIT_KEY;
+  process.env.CIRCLE_KIT_KEY;
 
 if (!kitKey) {
   throw new Error(
-    "NEXT_PUBLIC_CIRCLE_KIT_KEY is missing"
+    "CIRCLE_KIT_KEY is missing"
   );
 }
 
