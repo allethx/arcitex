@@ -182,7 +182,7 @@ export async function executeBridge({
 
   const txHash =
     mintStep?.txHash ??
-    mintStep?.data?.txHash ??
+    (mintStep as any)?.data?.txHash ??
     "";
 
   const explorerUrl =
