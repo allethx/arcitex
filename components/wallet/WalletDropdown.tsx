@@ -53,6 +53,7 @@ export default function WalletDropdown({
         top-[70px]
         z-50
         w-72
+        max-w-[calc(100vw-2rem)]
         overflow-hidden
         rounded-3xl
         border

@@ -8,9 +8,9 @@ export default function HistoryPage() {
   const history = useTransactionHistory();
 
   return (
-    <div className="mx-auto max-w-3xl p-8">
+    <div className="mx-auto max-w-3xl p-4 sm:p-8">
 
-      <h1 className="mb-8 text-4xl font-bold text-white">
+      <h1 className="mb-6 text-2xl font-bold text-white sm:mb-8 sm:text-4xl">
         Transaction History
       </h1>
 

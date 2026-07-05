@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import type { ReactNode } from "react";
 
 import Background from "@/components/ui/BackgroundFX";
@@ -9,6 +12,8 @@ export default function DashboardLayout({
 }: {
   children: ReactNode;
 }) {
+  const [mobileOpen, setMobileOpen] = useState(false);
+
   return (
     <main
       className="
@@ -22,25 +27,47 @@ export default function DashboardLayout({
 
       <Background />
 
+      {/* Mobile sidebar backdrop */}
+
+      {mobileOpen && (
+        <div
+          onClick={() => setMobileOpen(false)}
+          className="
+            fixed
+            inset-0
+            z-30
+            bg-black/60
+            backdrop-blur-sm
+            lg:hidden
+          "
+        />
+      )}
+
       {/* Sidebar */}
 
-      <Sidebar />
+      <Sidebar
+        open={mobileOpen}
+        onClose={() => setMobileOpen(false)}
+      />
 
       {/* Topbar */}
 
-      <Topbar />
+      <Topbar onMenuClick={() => setMobileOpen(true)} />
 
       {/* Content */}
 
       <section
         className="
           relative
-          ml-72
           h-screen
           overflow-y-auto
-          px-8
-          pt-24
+          px-4
+          pt-20
           pb-8
+          sm:px-6
+          lg:ml-72
+          lg:px-8
+          lg:pt-24
         "
       >
         {children}

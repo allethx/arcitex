@@ -2,25 +2,32 @@
 
 import {
   Bell,
+  Menu,
   Search,
 } from "lucide-react";
 
 import ConnectWalletButton from "@/components/wallet/ConnectWalletButton";
 
-export default function Topbar() {
+type TopbarProps = {
+  onMenuClick?: () => void;
+};
+
+export default function Topbar({ onMenuClick }: TopbarProps) {
   return (
     <header
       className="
         fixed
-        left-72
+        left-0
         right-0
         top-0
-        z-50
-        h-20
+        z-20
+        h-16
         border-b
         border-white/5
         bg-[#06070D]/80
         backdrop-blur-xl
+        sm:h-20
+        lg:left-72
       "
     >
       <div
@@ -28,14 +35,40 @@ export default function Topbar() {
           flex
           h-full
           items-center
-          justify-end
-          gap-4
-          px-8
+          justify-between
+          gap-2
+          px-4
+          sm:justify-end
+          sm:gap-4
+          sm:px-8
         "
       >
         <button
+          type="button"
+          onClick={onMenuClick}
+          aria-label="Open menu"
           className="
             flex
+            h-11
+            w-11
+            shrink-0
+            items-center
+            justify-center
+            rounded-2xl
+            border
+            border-white/5
+            bg-[#11131A]
+            transition
+            hover:bg-[#171A23]
+            lg:hidden
+          "
+        >
+          <Menu className="h-5 w-5" />
+        </button>
+
+        <button
+          className="
+            hidden
             h-11
             w-11
             items-center
@@ -46,6 +79,7 @@ export default function Topbar() {
             bg-[#11131A]
             transition
             hover:bg-[#171A23]
+            sm:flex
           "
         >
           <Search className="h-5 w-5" />
@@ -54,7 +88,7 @@ export default function Topbar() {
         <button
           className="
             relative
-            flex
+            hidden
             h-11
             w-11
             items-center
@@ -65,6 +99,7 @@ export default function Topbar() {
             bg-[#11131A]
             transition
             hover:bg-[#171A23]
+            sm:flex
           "
         >
           <Bell className="h-5 w-5" />

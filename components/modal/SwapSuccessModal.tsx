@@ -29,18 +29,21 @@ export default function SwapSuccessModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
 
       <div
         className="
+          max-h-[85vh]
           w-full
           max-w-md
+          overflow-y-auto
           rounded-3xl
           border
           border-zinc-700
           bg-zinc-900
-          p-8
+          p-5
           shadow-2xl
+          sm:p-8
         "
       >
         <div className="flex flex-col items-center">

@@ -15,6 +15,7 @@ import {
   Landmark,
   Wallet,
   Image as ImageIcon,
+  X,
 } from "lucide-react";
 
 const menus = [
@@ -70,12 +71,20 @@ const menus = [
   },
 ];
 
-export default function Sidebar() {
+type SidebarProps = {
+  open?: boolean;
+  onClose?: () => void;
+};
+
+export default function Sidebar({
+  open = false,
+  onClose,
+}: SidebarProps) {
   const pathname = usePathname();
 
   return (
     <aside
-      className="
+      className={`
         fixed
         left-0
         top-0
@@ -90,66 +99,97 @@ export default function Sidebar() {
         px-4
         py-4
         backdrop-blur-xl
-      "
+        transition-transform
+        duration-300
+        lg:translate-x-0
+        ${open ? "translate-x-0" : "-translate-x-full"}
+      `}
     >
-      {/* Logo */}
-      <Link
-        href="/app"
-        className="
-          group
-          relative
-          shrink-0
-          overflow-hidden
-          rounded-[18px]
-          border
-          border-white/[0.09]
-          bg-white/[0.045]
-          p-3
-          backdrop-blur-xl
-          transition-all
-          duration-300
-          hover:border-sky-400/40
-          hover:shadow-[0_0_45px_rgba(56,189,248,.18)]
-        "
-      >
-        <div
+      {/* Logo + mobile close */}
+      <div className="flex shrink-0 items-center gap-2">
+        <Link
+          href="/app"
+          onClick={onClose}
           className="
-            pointer-events-none
-            absolute
-            inset-0
-            bg-gradient-to-br
-            from-sky-400/10
-            via-transparent
-            to-violet-500/10
+            group
+            relative
+            flex-1
+            overflow-hidden
+            rounded-[18px]
+            border
+            border-white/[0.09]
+            bg-white/[0.045]
+            p-3
+            backdrop-blur-xl
+            transition-all
+            duration-300
+            hover:border-sky-400/40
+            hover:shadow-[0_0_45px_rgba(56,189,248,.18)]
           "
-        />
-        <div className="relative flex items-center gap-2.5">
+        >
           <div
             className="
-              flex
-              h-9
-              w-9
-              shrink-0
-              items-center
-              justify-center
-              rounded-lg
-              border
-              border-white/[0.09]
-              bg-white/[0.04]
+              pointer-events-none
+              absolute
+              inset-0
+              bg-gradient-to-br
+              from-sky-400/10
+              via-transparent
+              to-violet-500/10
             "
-          >
-            <Logo size={20} showWordmark={false} />
-          </div>
-          <div>
-            <div className="font-display text-[14px] font-bold leading-tight text-white">
-              Arcitex
+          />
+          <div className="relative flex items-center gap-2.5">
+            <div
+              className="
+                flex
+                h-9
+                w-9
+                shrink-0
+                items-center
+                justify-center
+                rounded-lg
+                border
+                border-white/[0.09]
+                bg-white/[0.04]
+              "
+            >
+              <Logo size={20} showWordmark={false} />
             </div>
-            <div className="text-[10px] leading-tight text-slate-400">
-              Trade Faster. Pay Smarter.
+            <div>
+              <div className="font-display text-[14px] font-bold leading-tight text-white">
+                Arcitex
+              </div>
+              <div className="text-[10px] leading-tight text-slate-400">
+                Trade Faster. Pay Smarter.
+              </div>
             </div>
           </div>
-        </div>
-      </Link>
+        </Link>
+
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Close menu"
+          className="
+            flex
+            h-11
+            w-11
+            shrink-0
+            items-center
+            justify-center
+            rounded-xl
+            border
+            border-white/[0.09]
+            bg-white/[0.04]
+            text-slate-400
+            transition
+            hover:text-white
+            lg:hidden
+          "
+        >
+          <X className="h-5 w-5" />
+        </button>
+      </div>
 
       {/* Divider */}
       <div
@@ -287,7 +327,12 @@ export default function Sidebar() {
           }
 
           return (
-            <Link key={item.href} href={item.href} className={sharedClassName}>
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={onClose}
+              className={sharedClassName}
+            >
               {content}
             </Link>
           );

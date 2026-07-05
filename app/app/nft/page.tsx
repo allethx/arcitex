@@ -8,8 +8,9 @@ export default function NFTPage() {
       className="
         flex
         justify-center
-        px-8
+        px-4
         py-10
+        sm:px-8
       "
     >
       <NFTCard />

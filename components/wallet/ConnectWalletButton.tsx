@@ -81,21 +81,24 @@ export default function ConnectWalletButton({
     return (
       <Button
         className={`
-          h-12
+          h-11
           rounded-2xl
           bg-gradient-to-r
           from-sky-500
           to-violet-600
           hover:opacity-90
+          sm:h-12
           ${
             fullWidth
               ? "w-full"
-              : "px-6"
+              : "px-4 sm:px-6"
           }
         `}
       >
-        <Wallet className="mr-2 h-4 w-4" />
-        Connect Wallet
+        <Wallet className="h-4 w-4 sm:mr-2" />
+        <span className={fullWidth ? "ml-2" : "hidden sm:ml-0 sm:inline"}>
+          Connect Wallet
+        </span>
       </Button>
     );
   }
@@ -105,21 +108,24 @@ export default function ConnectWalletButton({
       <Button
         onClick={() => open()}
         className={`
-          h-12
+          h-11
           rounded-2xl
           bg-gradient-to-r
           from-sky-500
           to-violet-600
           hover:opacity-90
+          sm:h-12
           ${
             fullWidth
               ? "w-full"
-              : "px-6"
+              : "px-4 sm:px-6"
           }
         `}
       >
-        <Wallet className="mr-2 h-4 w-4" />
-        Connect Wallet
+        <Wallet className="h-4 w-4 sm:mr-2" />
+        <span className={fullWidth ? "ml-2" : "hidden sm:ml-0 sm:inline"}>
+          Connect Wallet
+        </span>
       </Button>
     );
   }
@@ -134,16 +140,18 @@ export default function ConnectWalletButton({
         className={`
           flex
           items-center
-          gap-4
+          gap-2
           rounded-2xl
           border
           border-white/10
           bg-[#11131A]
-          px-4
+          px-3
           py-2
           transition-all
           hover:border-sky-500/40
           hover:bg-[#171A23]
+          sm:gap-4
+          sm:px-4
           ${
             fullWidth
               ? "w-full justify-between"
@@ -151,11 +159,12 @@ export default function ConnectWalletButton({
           }
         `}
       >
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           <span
             className="
               h-3
               w-3
+              shrink-0
               rounded-full
               bg-emerald-400
               shadow-[0_0_12px_rgba(74,222,128,.9)]
@@ -165,8 +174,10 @@ export default function ConnectWalletButton({
           <div className="text-left">
             <p
               className="
+                hidden
                 text-[11px]
                 text-zinc-400
+                sm:block
               "
             >
               {getNetworkName(
@@ -176,8 +187,10 @@ export default function ConnectWalletButton({
 
             <p
               className="
+                text-sm
                 font-semibold
                 text-white
+                sm:text-base
               "
             >
               {address.slice(
@@ -194,6 +207,7 @@ export default function ConnectWalletButton({
           className={`
             h-4
             w-4
+            shrink-0
             text-zinc-400
             transition-transform
             ${

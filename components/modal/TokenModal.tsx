@@ -31,19 +31,23 @@ export default function TokenModal({
         items-center
         justify-center
         bg-black/70
+        p-4
         backdrop-blur-sm
       "
     >
       <div
         className="
+          max-h-[85vh]
           w-full
           max-w-md
+          overflow-y-auto
           rounded-3xl
           border
           border-white/10
           bg-[#10131B]
-          p-6
+          p-5
           shadow-2xl
+          sm:p-6
         "
       >
         {/* Header */}
