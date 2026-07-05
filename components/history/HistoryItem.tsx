@@ -3,7 +3,7 @@
 import {
   ArrowLeftRight,
   SendHorizontal,
- GitBranchPlus,
+  GitBranchPlus,
   Gift,
   Vote,
   CheckCircle2,
@@ -36,7 +36,7 @@ function getTypeInfo(type?: string) {
       return {
         icon: GitBranchPlus,
         label: "Bridge",
-        color: "text-cyan-400",
+        color: "text-sky-400",
       };
 
     case "claim":
@@ -74,11 +74,11 @@ export default function HistoryItem({
       className="
         rounded-2xl
         border
-        border-zinc-700
-        bg-zinc-900
+        border-white/10
+        bg-[#0B0F17]
         p-5
         transition
-        hover:border-cyan-500/30
+        hover:border-sky-500/30
       "
     >
       {/* Header */}
@@ -98,6 +98,7 @@ export default function HistoryItem({
               bg-gradient-to-br
               from-sky-500
               to-violet-600
+              shadow-[0_0_20px_rgba(56,189,248,.25)]
             "
           >
             <Icon className="h-5 w-5 text-white" />
@@ -132,10 +133,10 @@ export default function HistoryItem({
 
           <CheckCircle2
             size={18}
-            className="text-green-400"
+            className="text-emerald-400"
           />
 
-          <span className="text-sm font-medium text-green-400">
+          <span className="text-sm font-medium text-emerald-400">
             {item.status}
           </span>
 
@@ -147,7 +148,16 @@ export default function HistoryItem({
 
       {item.type === "send" &&
         item.recipient && (
-          <div className="mt-5">
+          <div
+            className="
+              mt-5
+              rounded-xl
+              border
+              border-sky-500/20
+              bg-sky-500/5
+              p-4
+            "
+          >
             <p className="text-xs text-zinc-500">
               Recipient
             </p>
@@ -161,8 +171,20 @@ export default function HistoryItem({
       {item.type === "bridge" &&
         item.fromChain &&
         item.toChain && (
-          <div className="mt-5 flex items-center justify-between rounded-xl bg-zinc-950 px-4 py-3">
-
+          <div
+            className="
+              mt-5
+              flex
+              items-center
+              justify-between
+              rounded-xl
+              border
+              border-sky-500/20
+              bg-sky-500/5
+              px-4
+              py-3
+            "
+          >
             <span className="text-sm text-zinc-300">
               {item.fromChain}
             </span>
@@ -180,8 +202,16 @@ export default function HistoryItem({
 
       {item.type === "vote" &&
         item.proposal && (
-          <div className="mt-5 rounded-xl bg-zinc-950 p-4">
-
+          <div
+            className="
+              mt-5
+              rounded-xl
+              border
+              border-sky-500/20
+              bg-sky-500/5
+              p-4
+            "
+          >
             <p className="text-xs text-zinc-500">
               Proposal
             </p>
@@ -228,9 +258,9 @@ export default function HistoryItem({
             items-center
             gap-2
             text-sm
-            text-cyan-400
+            text-sky-400
             transition
-            hover:text-cyan-300
+            hover:text-sky-300
           "
         >
           ArcScan

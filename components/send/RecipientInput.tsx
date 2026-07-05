@@ -12,7 +12,7 @@ export default function RecipientInput({
   return (
     <div>
 
-      <p className="mb-2 text-sm text-zinc-400">
+      <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-slate-400">
         Recipient Address
       </p>
 
@@ -27,15 +27,16 @@ export default function RecipientInput({
           w-full
           rounded-2xl
           border
-          border-zinc-800
-          bg-zinc-950
+          border-white/10
+          bg-white/[0.03]
           px-4
-          py-3
+          py-3.5
           text-white
           outline-none
           transition
-          placeholder:text-zinc-600
-          focus:border-violet-500
+          placeholder:text-slate-600
+          focus:border-sky-400/50
+          focus:bg-white/[0.05]
         "
       />
 

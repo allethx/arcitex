@@ -3,7 +3,7 @@ import Reveal from "@/components/ui/Reveal";
 const features = [
   {
     title: "Swap",
-    desc: "Lightning-fast token swaps with smart routing across the ARC ecosystem.",
+    desc: "Lightning fast token swaps with smart routing across the ARC ecosystem.",
     path: "M7 10l5-5 5 5M7 14l5 5 5-5",
   },
   {
@@ -13,7 +13,7 @@ const features = [
   },
   {
     title: "Send",
-    desc: "Instant wallet-to-wallet stablecoin payments, anywhere in the world.",
+    desc: "Instant wallet to wallet stablecoin payments, anywhere in the world.",
     path: "M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z",
   },
   {

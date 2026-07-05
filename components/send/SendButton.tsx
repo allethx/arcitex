@@ -24,17 +24,18 @@ export default function SendButton({
         w-full
         rounded-2xl
         bg-gradient-to-r
-        from-violet-600
-        to-cyan-500
+        from-sky-500
+        to-violet-600
         py-4
         font-semibold
         text-white
+        shadow-[0_0_30px_rgba(56,189,248,0.25)]
         transition-all
         duration-300
         hover:opacity-90
-        hover:shadow-lg
         disabled:cursor-not-allowed
         disabled:opacity-50
+        disabled:shadow-none
       "
     >
       {children}

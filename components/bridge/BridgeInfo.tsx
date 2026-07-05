@@ -56,12 +56,13 @@ export default function BridgeInfo({
         className="
           rounded-2xl
           border
-          border-zinc-800
-          bg-zinc-950/50
-          p-4
+          border-white/10
+          bg-white/[0.03]
+          px-4
+          py-3
         "
       >
-        <p className="text-sm text-zinc-400">
+        <p className="text-sm text-slate-400">
           Estimating bridge...
         </p>
       </div>
@@ -87,112 +88,52 @@ export default function BridgeInfo({
       className="
         rounded-2xl
         border
-        border-zinc-800
-        bg-zinc-950/50
+        border-white/10
+        bg-white/[0.03]
         p-4
+        text-sm
       "
     >
-      <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <span className="text-slate-400">
+          Route
+        </span>
 
-        <div className="flex items-center justify-between">
-          <span className="text-sm text-zinc-400">
-            Route
-          </span>
+        <span className="text-right font-medium text-white">
+          {route}
+        </span>
+      </div>
 
-          <span className="text-right text-sm font-semibold text-white">
-            {route}
-          </span>
-        </div>
+      {gasFees.length === 0 ? (
+        <p className="mt-3 border-t border-white/10 pt-3 text-xs text-slate-500">
+          No gas estimate available.
+        </p>
+      ) : (
+        <div className="mt-3 space-y-2 border-t border-white/10 pt-3">
 
-        <div className="border-t border-zinc-800 pt-4">
+          {gasFees.map(
+            (item, index) => (
+              <div
+                key={`${item.name}-${index}`}
+                className="flex items-center justify-between gap-3"
+              >
+                <span className="text-xs text-slate-500">
+                  {formatChain(item.blockchain)}
+                </span>
 
-          <h3 className="mb-4 text-sm font-semibold text-zinc-300">
-            Estimated Network Fees
-          </h3>
-
-          {gasFees.length ===
-            0 && (
-            <p className="text-sm text-zinc-500">
-              No gas estimate
-              available.
-            </p>
+                <span className="text-right text-xs font-medium text-white">
+                  {item.fees?.fee ?? "--"} {item.token}
+                  <span className="ml-1.5 text-slate-500">
+                    · Gas {formatGas(item.fees?.gas)}
+                  </span>
+                </span>
+              </div>
+            ),
           )}
 
-          <div className="space-y-4">
-
-            {gasFees.map(
-              (
-                item,
-                index,
-              ) => (
-                <div
-                  key={`${item.name}-${index}`}
-                  className="
-                    rounded-xl
-                    border
-                    border-zinc-800
-                    bg-zinc-900/50
-                    p-3
-                  "
-                >
-                  <div className="flex items-start justify-between">
-
-                    <div>
-                      <p className="font-medium text-white">
-                        {item.name}
-                      </p>
-
-                      <p className="text-xs text-zinc-500">
-                        {formatChain(
-                          item.blockchain,
-                        )}
-                      </p>
-                    </div>
-
-                    <div className="text-right space-y-2">
-
-                      <div>
-                        <p className="text-[11px] uppercase tracking-wide text-zinc-500">
-                          Fee
-                        </p>
-
-                        <p className="text-sm font-semibold text-white">
-                          {item
-                            .fees
-                            ?.fee ??
-                            "--"}{" "}
-                          {
-                            item.token
-                          }
-                        </p>
-                      </div>
-
-                      <div>
-                        <p className="text-[11px] uppercase tracking-wide text-zinc-500">
-                          Gas
-                        </p>
-
-                        <p className="text-sm text-zinc-300">
-                          {formatGas(
-                            item
-                              .fees
-                              ?.gas,
-                          )}
-                        </p>
-                      </div>
-
-                    </div>
-
-                  </div>
-                </div>
-              ),
-            )}
-
-          </div>
-
         </div>
+      )}
 
-      </div>
     </div>
   );
 }

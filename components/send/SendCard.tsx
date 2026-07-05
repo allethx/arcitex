@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import { SendHorizonal } from "lucide-react";
+import { SendHorizontal } from "lucide-react";
 
 import RecipientInput from "./RecipientInput";
 import AmountInput from "./AmountInput";
@@ -118,25 +118,64 @@ export default function SendCard() {
     <>
       <div
         className="
+          group
+          relative
           w-full
           max-w-md
-          rounded-3xl
+          overflow-hidden
+          rounded-[32px]
           border
-          border-white/5
-          bg-[#171A23]/90
-          p-6
-          backdrop-blur-xl
+          border-white/10
+          bg-white/[0.03]
+          p-7
+          backdrop-blur-2xl
+          transition-all
+          duration-500
+          hover:border-violet-400/30
+          hover:shadow-[0_0_70px_rgba(168,85,247,0.14)]
+          sm:p-9
         "
       >
+        {/* Ambient glow */}
+
+        <div
+          className="
+            pointer-events-none
+            absolute
+            -left-24
+            -top-24
+            h-72
+            w-72
+            rounded-full
+            bg-sky-500/10
+            blur-[110px]
+          "
+        />
+
+        <div
+          className="
+            pointer-events-none
+            absolute
+            -right-24
+            -bottom-24
+            h-72
+            w-72
+            rounded-full
+            bg-violet-600/12
+            blur-[110px]
+          "
+        />
+
         {/* Header */}
 
-        <div className="flex items-center gap-4">
+        <div className="relative flex items-center gap-4">
 
           <div
             className="
               flex
               h-14
               w-14
+              shrink-0
               items-center
               justify-center
               rounded-2xl
@@ -146,24 +185,28 @@ export default function SendCard() {
               shadow-[0_0_30px_rgba(56,189,248,.30)]
             "
           >
-            <SendHorizonal className="h-7 w-7 text-white" />
+            <SendHorizontal className="h-7 w-7 text-white" />
           </div>
 
           <div>
 
-            <h2 className="text-4xl font-bold tracking-tight">
+            <p className="text-xs font-semibold uppercase tracking-widest text-sky-400">
+              Transfer
+            </p>
+
+            <h2 className="mt-1 text-3xl font-bold tracking-tight text-white sm:text-4xl">
               Send
             </h2>
-
-            <p className="mt-1 text-sm text-zinc-400">
-              Transfer USDC securely to another wallet.
-            </p>
 
           </div>
 
         </div>
 
-        <div className="mt-8 space-y-5">
+        <p className="relative mt-3 text-sm leading-relaxed text-slate-400">
+          Transfer USDC securely to another wallet, anywhere on Arc.
+        </p>
+
+        <div className="relative mt-8 space-y-5">
 
           <RecipientInput
             value={recipient}
@@ -208,7 +251,7 @@ export default function SendCard() {
           {!validation.valid && (
             <div
               className="
-                rounded-xl
+                rounded-2xl
                 border
                 border-red-500/30
                 bg-red-500/10

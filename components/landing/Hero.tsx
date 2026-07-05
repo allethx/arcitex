@@ -30,7 +30,7 @@ export default function Hero() {
           <Reveal>
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/[0.09] bg-white/[0.04] px-4 py-1.5 text-[12.5px] text-slate-400">
               <span className="h-1.5 w-1.5 rounded-full bg-sky-400 shadow-[0_0_8px_#38BDF8]" />
-              Powered by Circle&nbsp;•&nbsp;Built on ARC
+              Powered by Circle&nbsp;•&nbsp;Built on Arc
             </div>
           </Reveal>
 
@@ -46,9 +46,9 @@ export default function Hero() {
 
           <Reveal delay={140}>
             <p className="mb-8 max-w-[480px] text-[17px] leading-[1.7] text-slate-400">
-              The fastest decentralized finance platform built for the ARC ecosystem. Swap
+              The fastest decentralized finance platform built for the Arc ecosystem. Swap
               assets, bridge across chains, send stablecoins, manage your portfolio and
-              participate in governance — everything from one platform.
+              participate in governance, everything from one platform.
             </p>
           </Reveal>
 
@@ -98,7 +98,7 @@ export default function Hero() {
                   <span className="h-2 w-2 rounded-full bg-white/15" />
                   <span className="h-2 w-2 rounded-full bg-white/15" />
                 </div>
-                <div className="text-xs text-slate-500">app.arcitex.fi</div>
+                <div className="text-xs text-slate-500">arcitex.app</div>
               </div>
 
               <div className="mb-4 flex gap-1.5 rounded-xl bg-white/[0.03] p-1.5">

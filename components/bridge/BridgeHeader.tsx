@@ -20,10 +20,10 @@ export default function BridgeHeader() {
               to-violet-600
             "
           >
-            <GitBranch className="h-5 w-5 text-white" />
+            <GitBranch className="h-7 w-7 text-white" />
           </div>
 
-          <h2 className="text-3xl font-bold">
+          <h2 className="mt-1 text-3xl font-bold tracking-tight text-white sm:text-4xl">
             Bridge
           </h2>
         </div>

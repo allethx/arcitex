@@ -18,15 +18,15 @@ export default function AmountInput({
 }: Props) {
   return (
     <div>
-      <div className="mb-2 flex items-center justify-between">
+      <div className="mb-1.5 flex items-center justify-between">
 
-        <label className="text-sm text-zinc-400">
+        <label className="text-xs font-semibold uppercase tracking-widest text-slate-400">
           Amount
         </label>
 
         <div className="flex items-center gap-3">
 
-          <span className="text-xs text-zinc-400">
+          <span className="text-xs text-slate-400">
             Balance{" "}
             <span className="font-medium text-white">
               {loading
@@ -46,11 +46,11 @@ export default function AmountInput({
             className="
               text-xs
               font-semibold
-              text-violet-400
+              text-sky-400
               transition
-              hover:text-violet-300
+              hover:text-sky-300
               disabled:cursor-not-allowed
-              disabled:text-zinc-600
+              disabled:text-slate-600
             "
           >
             MAX
@@ -72,16 +72,18 @@ export default function AmountInput({
           w-full
           rounded-2xl
           border
-          border-zinc-800
-          bg-zinc-950
+          border-white/10
+          bg-white/[0.03]
           px-4
-          py-4
+          py-3
           text-lg
+          font-semibold
           text-white
           outline-none
           transition
-          placeholder:text-zinc-600
-          focus:border-violet-500
+          placeholder:text-slate-600
+          focus:border-sky-400/50
+          focus:bg-white/[0.05]
         "
       />
     </div>

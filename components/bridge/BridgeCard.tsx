@@ -135,39 +135,80 @@ export default function BridgeCard() {
     <>
       <div
         className="
+          group
+          relative
           w-full
           max-w-[430px]
-          rounded-3xl
+          overflow-hidden
+          rounded-[32px]
           border
-          border-white/5
-          bg-[#171A23]/90
+          border-white/10
+          bg-white/[0.03]
           p-6
-          backdrop-blur-xl
+          backdrop-blur-2xl
+          transition-all
+          duration-500
+          hover:border-violet-400/30
+          hover:shadow-[0_0_70px_rgba(168,85,247,0.14)]
         "
       >
+        {/* Ambient glow */}
+
+        <div
+          className="
+            pointer-events-none
+            absolute
+            -left-24
+            -top-24
+            h-72
+            w-72
+            rounded-full
+            bg-sky-500/10
+            blur-[110px]
+          "
+        />
+
+        <div
+          className="
+            pointer-events-none
+            absolute
+            -right-24
+            -bottom-24
+            h-72
+            w-72
+            rounded-full
+            bg-violet-600/12
+            blur-[110px]
+          "
+        />
+
         <BridgeHeader />
 
-        <div className="mt-6 space-y-4">
+        <div className="relative mt-5 space-y-3.5">
 
-          <ChainSelector
-            label="From"
-            value={fromChain}
-            onChange={(value) =>
-              setFromChain(
-                value as SupportedChain,
-              )
-            }
-          />
+          <div className="grid grid-cols-2 gap-3">
 
-          <ChainSelector
-            label="To"
-            value={toChain}
-            onChange={(value) =>
-              setToChain(
-                value as SupportedChain,
-              )
-            }
-          />
+            <ChainSelector
+              label="From"
+              value={fromChain}
+              onChange={(value) =>
+                setFromChain(
+                  value as SupportedChain,
+                )
+              }
+            />
+
+            <ChainSelector
+              label="To"
+              value={toChain}
+              onChange={(value) =>
+                setToChain(
+                  value as SupportedChain,
+                )
+              }
+            />
+
+          </div>
 
           <AmountInput
             value={amount}
@@ -196,7 +237,7 @@ export default function BridgeCard() {
                 className="
                   rounded-2xl
                   border
-                  border-red-500/20
+                  border-red-500/30
                   bg-red-500/10
                   px-4
                   py-3
@@ -215,7 +256,7 @@ export default function BridgeCard() {
                 className="
                   rounded-2xl
                   border
-                  border-red-500/20
+                  border-red-500/30
                   bg-red-500/10
                   px-4
                   py-3

@@ -25,7 +25,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Arcitex — Trade Faster. Pay Smarter.",
+  title: "Arcitex Trade Faster. Pay Smarter.",
   description:
     "Arcitex is a next-generation trading hub built natively for Arc Testnet. Swap, send, bridge, and govern — all inside one unified, glass-smooth interface.",
   icons: {

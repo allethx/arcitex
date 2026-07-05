@@ -26,19 +26,19 @@ export default function SendInfo({
       className="
         rounded-2xl
         border
-        border-zinc-800
-        bg-zinc-950/60
+        border-white/10
+        bg-white/[0.03]
         p-4
         text-sm
       "
     >
       <div className="flex justify-between">
 
-        <span className="text-zinc-500">
+        <span className="text-slate-400">
           Estimated Fee
         </span>
 
-        <span>
+        <span className="font-medium text-white">
           {String(fee)}
         </span>
 
@@ -46,11 +46,11 @@ export default function SendInfo({
 
       <div className="mt-3 flex justify-between">
 
-        <span className="text-zinc-500">
+        <span className="text-slate-400">
           Gas
         </span>
 
-        <span>
+        <span className="font-medium text-white">
           {String(gas)}
         </span>
 
@@ -58,11 +58,11 @@ export default function SendInfo({
 
       <div className="mt-3 flex justify-between">
 
-        <span className="text-zinc-500">
+        <span className="text-slate-400">
           Gas Price
         </span>
 
-        <span>
+        <span className="font-medium text-white">
           {String(gasPrice)}
         </span>
 
@@ -70,11 +70,11 @@ export default function SendInfo({
 
       <div className="mt-3 flex justify-between">
 
-        <span className="text-zinc-500">
+        <span className="text-slate-400">
           Network
         </span>
 
-        <span>
+        <span className="font-medium text-white">
           Arc Testnet
         </span>
 

@@ -1,5 +1,7 @@
 "use client";
 
+import { ChevronDown } from "lucide-react";
+
 type ChainOption = {
   label: string;
   value: string;
@@ -33,38 +35,60 @@ export default function ChainSelector({
 }: Props) {
   return (
     <div>
-      <label className="mb-2 block text-sm text-zinc-400">
+      <label className="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-slate-400">
         {label}
       </label>
 
-      <select
-        value={value}
-        onChange={(e) =>
-          onChange(e.target.value)
-        }
-        className="
-          w-full
-          rounded-2xl
-          border
-          border-zinc-800
-          bg-zinc-950
-          px-4
-          py-4
-          text-white
-          outline-none
-          transition
-          focus:border-violet-500
-        "
-      >
-        {CHAINS.map((chain) => (
-          <option
-            key={chain.value}
-            value={chain.value}
-          >
-            {chain.label}
-          </option>
-        ))}
-      </select>
+      <div className="relative">
+
+        <select
+          value={value}
+          onChange={(e) =>
+            onChange(e.target.value)
+          }
+          className="
+            w-full
+            appearance-none
+            rounded-2xl
+            border
+            border-white/10
+            bg-white/[0.03]
+            px-4
+            py-3
+            pr-11
+            text-sm
+            text-white
+            outline-none
+            transition
+            focus:border-sky-400/50
+            focus:bg-white/[0.05]
+          "
+        >
+          {CHAINS.map((chain) => (
+            <option
+              key={chain.value}
+              value={chain.value}
+              className="bg-[#0B0F17]"
+            >
+              {chain.label}
+            </option>
+          ))}
+        </select>
+
+        <ChevronDown
+          size={16}
+          className="
+            pointer-events-none
+            absolute
+            right-4
+            top-1/2
+            -translate-y-1/2
+            text-slate-500
+          "
+        />
+
+      </div>
+
     </div>
   );
 }

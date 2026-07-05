@@ -1,5 +1,12 @@
 "use client";
 
+import {
+  CheckCircle2,
+  Copy,
+  ExternalLink,
+  X,
+} from "lucide-react";
+
 type Props = {
   open: boolean;
   onClose: () => void;
@@ -31,19 +38,17 @@ export default function BridgeSuccessModal({
     }
   }
 
-  const sourceChain =
-    String(
-      result?.source?.chain?.name ??
-        result?.source?.chain ??
-        "--",
-    ).replaceAll("_", " ");
+  const sourceChain = String(
+    result?.source?.chain?.name ??
+      result?.source?.chain ??
+      "--",
+  ).replaceAll("_", " ");
 
-  const destinationChain =
-    String(
-      result?.destination?.chain?.name ??
-        result?.destination?.chain ??
-        "--",
-    ).replaceAll("_", " ");
+  const destinationChain = String(
+    result?.destination?.chain?.name ??
+      result?.destination?.chain ??
+      "--",
+  ).replaceAll("_", " ");
 
   const provider =
     result?.provider ===
@@ -51,58 +56,109 @@ export default function BridgeSuccessModal({
       ? "Circle CCTP V2"
       : result?.provider ?? "--";
 
+  const explorerUrl =
+    result?.explorerUrl ??
+    (result?.txHash
+      ? `https://testnet.arcscan.app/tx/${result.txHash}`
+      : null);
+
   return (
     <div
       className="
         fixed
         inset-0
-        z-50
+        z-[999]
         flex
         items-center
         justify-center
         bg-black/70
-        backdrop-blur-sm
+        backdrop-blur-md
       "
     >
       <div
         className="
+          relative
           w-full
-          max-w-md
-          rounded-3xl
+          max-w-lg
+          max-h-[90vh]
+          overflow-y-auto
+          rounded-[32px]
           border
-          border-zinc-800
-          bg-zinc-900
+          border-white/10
+          bg-[#0B0F17]
           p-8
+          shadow-[0_0_60px_rgba(56,189,248,.18)]
         "
       >
+        {/* Close */}
+
+        <button
+          type="button"
+          onClick={onClose}
+          className="
+            absolute
+            right-5
+            top-5
+            rounded-xl
+            p-2
+            text-zinc-400
+            transition
+            hover:bg-white/5
+            hover:text-white
+          "
+        >
+          <X size={18} />
+        </button>
+
         {/* Icon */}
 
         <div className="flex justify-center">
+
           <div
             className="
               flex
-              h-16
-              w-16
+              h-24
+              w-24
               items-center
               justify-center
               rounded-full
-              bg-green-500/20
+              bg-gradient-to-br
+              from-sky-500
+              to-violet-600
+              shadow-[0_0_40px_rgba(56,189,248,.35)]
             "
           >
-            <span className="text-3xl">
-              🌉
-            </span>
+            <CheckCircle2
+              className="h-12 w-12 text-white"
+            />
           </div>
+
         </div>
 
         {/* Title */}
 
-        <h2 className="mt-6 text-center text-2xl font-bold">
+        <h2
+          className="
+            mt-8
+            text-center
+            text-3xl
+            font-bold
+          "
+        >
           Bridge Successful
         </h2>
 
-        <p className="mt-2 text-center text-zinc-500">
-          Your assets have been bridged successfully.
+        <p
+          className="
+            mx-auto
+            mt-3
+            max-w-sm
+            text-center
+            text-zinc-400
+          "
+        >
+          Your assets have been
+          bridged successfully.
         </p>
 
         {/* Bridge Details */}
@@ -112,82 +168,100 @@ export default function BridgeSuccessModal({
             mt-8
             rounded-2xl
             border
-            border-zinc-800
-            bg-zinc-950/50
+            border-sky-500/20
+            bg-sky-500/5
             p-5
           "
         >
-          <h3 className="mb-5 text-base font-semibold">
-            Bridge Details
-          </h3>
+          <div className="flex justify-between">
 
-          <div className="space-y-4 text-sm">
+            <span className="text-zinc-400">
+              Amount
+            </span>
 
-            <div className="flex items-center justify-between">
-              <span className="text-zinc-500">
-                Amount
-              </span>
+            <span className="font-semibold">
+              {result?.amount ?? "--"}{" "}
+              {result?.token ?? ""}
+            </span>
 
-              <span className="font-medium">
-                {result?.amount ?? "--"}{" "}
-                {result?.token ?? ""}
-              </span>
-            </div>
+          </div>
 
-            <div className="flex items-start justify-between">
-              <span className="text-zinc-500">
-                Route
-              </span>
+          <div className="mt-4 flex items-start justify-between">
 
-              <div className="text-right">
-                <p>{sourceChain}</p>
+            <span className="text-zinc-400">
+              Route
+            </span>
 
-                <p className="text-zinc-500">
-                  ↓
-                </p>
+            <div className="text-right">
+              <p className="font-semibold">
+                {sourceChain}
+              </p>
 
-                <p>{destinationChain}</p>
-              </div>
-            </div>
+              <p className="text-zinc-500">
+                ↓
+              </p>
 
-            <div className="flex items-center justify-between">
-              <span className="text-zinc-500">
-                Provider
-              </span>
-
-              <span className="font-medium">
-                {provider}
-              </span>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <span className="text-zinc-500">
-                Speed
-              </span>
-
-              <span
-                className="
-                  rounded-full
-                  bg-emerald-500/15
-                  px-3
-                  py-1
-                  text-xs
-                  font-semibold
-                  text-emerald-400
-                "
-              >
-                {result?.config
-                  ?.transferSpeed ??
-                  "FAST"}
-              </span>
+              <p className="font-semibold">
+                {destinationChain}
+              </p>
             </div>
 
           </div>
+
+          <div className="mt-4 flex justify-between">
+
+            <span className="text-zinc-400">
+              Provider
+            </span>
+
+            <span className="font-semibold">
+              {provider}
+            </span>
+
+          </div>
+
+          <div className="mt-4 flex items-center justify-between">
+
+            <span className="text-zinc-400">
+              Speed
+            </span>
+
+            <span
+              className="
+                rounded-full
+                bg-emerald-500/15
+                px-3
+                py-1
+                text-xs
+                font-semibold
+                text-emerald-400
+              "
+            >
+              {result?.config
+                ?.transferSpeed ??
+                "FAST"}
+            </span>
+
+          </div>
+
+          <div className="mt-4 flex items-center justify-between">
+
+            <span className="text-zinc-400">
+              Status
+            </span>
+
+            <span className="font-semibold text-emerald-400">
+              {result?.status ??
+                "Pending"}
+            </span>
+
+          </div>
+
         </div>
 
         {/* Transaction */}
 
-        <div className="mt-8">
+        <div className="mt-6">
 
           <p className="mb-2 text-xs text-zinc-500">
             Transaction Hash
@@ -195,14 +269,18 @@ export default function BridgeSuccessModal({
 
           <div
             className="
+              flex
+              items-center
+              justify-between
+              gap-3
               rounded-2xl
               border
-              border-zinc-800
-              bg-zinc-950
+              border-white/10
+              bg-white/5
               p-4
             "
           >
-            <p className="break-all font-mono text-xs">
+            <p className="break-all font-mono text-xs text-zinc-300">
               {result?.txHash ??
                 "--"}
             </p>
@@ -212,77 +290,58 @@ export default function BridgeSuccessModal({
                 type="button"
                 onClick={copyHash}
                 className="
-                  mt-3
-                  text-xs
-                  font-medium
-                  text-cyan-400
+                  shrink-0
+                  text-zinc-400
                   transition
-                  hover:text-cyan-300
+                  hover:text-white
                 "
               >
-                📋 Copy Hash
+                <Copy size={16} />
               </button>
             )}
           </div>
 
         </div>
 
-        {/* Status */}
+        {/* Explorer */}
 
-        <div
+        <button
+          type="button"
+          disabled={!explorerUrl}
+          onClick={() => {
+            if (explorerUrl) {
+              window.open(
+                explorerUrl,
+                "_blank",
+              );
+            }
+          }}
           className="
             mt-8
             flex
+            h-14
+            w-full
             items-center
-            justify-between
-            rounded-xl
+            justify-center
+            gap-3
+            rounded-2xl
             border
-            border-zinc-800
-            bg-zinc-950/50
-            px-4
-            py-3
+            border-white/10
+            bg-white/5
+            font-semibold
+            transition
+            hover:border-sky-500
+            hover:bg-sky-500/10
+            disabled:cursor-not-allowed
+            disabled:opacity-50
           "
         >
-          <span className="text-zinc-400">
-            Status
-          </span>
+          View on Explorer
 
-          <span className="font-semibold text-emerald-400">
-            {result?.status ??
-              "Pending"}
-          </span>
-        </div>
-
-        {/* Explorer */}
-
-        {result?.explorerUrl && (
-          <a
-            href={
-              result.explorerUrl
-            }
-            target="_blank"
-            rel="noopener noreferrer"
-            className="
-              mt-6
-              flex
-              w-full
-              items-center
-              justify-center
-              gap-2
-              rounded-2xl
-              border
-              border-violet-500/30
-              bg-violet-500/10
-              py-4
-              font-semibold
-              text-violet-300
-              transition
-              hover:bg-violet-500/20
-            "
-          >
-            🔗 View on Explorer
-          </a>
-        )}
+          <ExternalLink
+            size={18}
+          />
+        </button>
 
         {/* Close */}
 
@@ -290,13 +349,13 @@ export default function BridgeSuccessModal({
           type="button"
           onClick={onClose}
           className="
-            mt-5
+            mt-4
+            h-14
             w-full
             rounded-2xl
             bg-gradient-to-r
-            from-violet-600
-            to-cyan-500
-            py-4
+            from-sky-500
+            to-violet-600
             font-semibold
             text-white
             transition

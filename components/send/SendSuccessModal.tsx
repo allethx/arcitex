@@ -1,5 +1,11 @@
 "use client";
 
+import {
+  CheckCircle2,
+  ExternalLink,
+  X,
+} from "lucide-react";
+
 type Props = {
   open: boolean;
   onClose: () => void;
@@ -20,106 +26,184 @@ export default function SendSuccessModal({
       className="
         fixed
         inset-0
-        z-50
+        z-[999]
         flex
         items-center
         justify-center
         bg-black/70
-        backdrop-blur-sm
+        backdrop-blur-md
       "
     >
       <div
         className="
+          relative
           w-full
-          max-w-md
-          rounded-3xl
+          max-w-lg
+          overflow-hidden
+          rounded-[32px]
           border
-          border-zinc-800
-          bg-zinc-900
+          border-white/10
+          bg-[#0B0F17]
           p-8
+          shadow-[0_0_60px_rgba(56,189,248,.18)]
         "
       >
-        <div className="text-center">
+        {/* Close */}
+
+        <button
+          type="button"
+          onClick={onClose}
+          className="
+            absolute
+            right-5
+            top-5
+            rounded-xl
+            p-2
+            text-zinc-400
+            transition
+            hover:bg-white/5
+            hover:text-white
+          "
+        >
+          <X size={18} />
+        </button>
+
+        {/* Icon */}
+
+        <div className="flex justify-center">
 
           <div
             className="
-              mx-auto
               flex
-              h-16
-              w-16
+              h-24
+              w-24
               items-center
               justify-center
               rounded-full
-              bg-green-500/20
+              bg-gradient-to-br
+              from-sky-500
+              to-violet-600
+              shadow-[0_0_40px_rgba(56,189,248,.35)]
             "
           >
-            <span className="text-3xl">
-              ✅
-            </span>
+            <CheckCircle2
+              className="h-12 w-12 text-white"
+            />
           </div>
 
-          <h2 className="mt-5 text-2xl font-bold">
-            Transaction Successful
-          </h2>
+        </div>
 
-          <p className="mt-2 text-zinc-500">
-            Your tokens have been sent successfully.
+        {/* Title */}
+
+        <h2
+          className="
+            mt-8
+            text-center
+            text-3xl
+            font-bold
+          "
+        >
+          Transaction Successful
+        </h2>
+
+        <p
+          className="
+            mx-auto
+            mt-3
+            max-w-sm
+            text-center
+            text-zinc-400
+          "
+        >
+          Your tokens have been
+          sent successfully.
+        </p>
+
+        {/* Card */}
+
+        <div
+          className="
+            mt-8
+            rounded-2xl
+            border
+            border-sky-500/20
+            bg-sky-500/5
+            p-5
+          "
+        >
+          <span className="text-xs text-zinc-500">
+            Transaction Hash
+          </span>
+
+          <p className="mt-2 break-all font-mono text-sm font-semibold">
+            {result?.txHash ?? "--"}
           </p>
 
         </div>
 
-        <div className="mt-8 space-y-4">
-
-          <div>
-
-            <p className="text-xs text-zinc-500">
-              Transaction Hash
-            </p>
-
-            <p className="mt-1 break-all text-sm">
-              {result?.txHash ?? "--"}
-            </p>
-
-          </div>
-
-          {result?.explorerUrl && (
-            <a
-              href={result.explorerUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="
-                block
-                text-center
-                text-violet-400
-                transition
-                hover:text-violet-300
-              "
-            >
-              View on ArcScan
-            </a>
-          )}
-
-        </div>
+        {/* Explorer */}
 
         <button
-          onClick={onClose}
+          type="button"
+          disabled={!result?.explorerUrl}
+          onClick={() => {
+            if (result?.explorerUrl) {
+              window.open(
+                result.explorerUrl,
+                "_blank",
+              );
+            }
+          }}
           className="
             mt-8
+            flex
+            h-14
+            w-full
+            items-center
+            justify-center
+            gap-3
+            rounded-2xl
+            border
+            border-white/10
+            bg-white/5
+            font-semibold
+            transition
+            hover:border-sky-500
+            hover:bg-sky-500/10
+            disabled:cursor-not-allowed
+            disabled:opacity-50
+          "
+        >
+          View on ArcScan
+
+          <ExternalLink
+            size={18}
+          />
+        </button>
+
+        {/* Close */}
+
+        <button
+          type="button"
+          onClick={onClose}
+          className="
+            mt-4
+            h-14
             w-full
             rounded-2xl
             bg-gradient-to-r
-            from-violet-600
-            to-cyan-500
-            py-4
+            from-sky-500
+            to-violet-600
             font-semibold
             text-white
+            transition
+            hover:opacity-90
           "
         >
           Close
         </button>
 
       </div>
-
     </div>
   );
 }
