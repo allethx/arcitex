@@ -3,7 +3,10 @@ export type TransactionType =
   | "send"
   | "bridge"
   | "claim"
-  | "vote";
+  | "vote"
+  | "payment";
+
+export type PaymentCategory = "bill";
 
 export type TransactionHistory = {
   id: string;
@@ -34,4 +37,10 @@ export type TransactionHistory = {
   proposal?: string;
 
   vote?: "YES" | "NO";
+
+  // Payment metadata
+
+  category?: PaymentCategory;
+
+  note?: string;
 };

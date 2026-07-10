@@ -46,6 +46,12 @@ const menus = [
     icon: Landmark,
     badgeText: "Live",
   },
+   {
+    href: "/app/pay",
+    label: "Pay",
+    icon: Wallet,
+    badgeText: "Live",
+  },
   {
     href: "/app/portfolio",
     label: "Portfolio",
@@ -58,17 +64,10 @@ const menus = [
     icon: History,
   },
   
-  {
+   {
     href: "/app/pools",
     label: "Pools",
     icon: Droplets,
-    comingSoon: true,
-    disabled: true,
-  },
-  {
-    href: "/app/pay",
-    label: "Pay",
-    icon: Wallet,
     comingSoon: true,
     disabled: true,
   },

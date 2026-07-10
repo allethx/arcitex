@@ -6,6 +6,7 @@ import {
   GitBranchPlus,
   Gift,
   Vote,
+  Receipt,
   CheckCircle2,
   ExternalLink,
 } from "lucide-react";
@@ -51,6 +52,13 @@ function getTypeInfo(type?: string) {
         icon: Vote,
         label: "Governance",
         color: "text-amber-400",
+      };
+
+    case "payment":
+      return {
+        icon: Receipt,
+        label: "Bill Payment",
+        color: "text-emerald-400",
       };
 
     default:
@@ -200,6 +208,43 @@ export default function HistoryItem({
           </div>
         )}
 
+      {item.type === "payment" && (
+        <div
+          className="
+            mt-5
+            rounded-xl
+            border
+            border-emerald-500/20
+            bg-emerald-500/5
+            p-4
+          "
+        >
+          {item.note && (
+            <>
+              <p className="text-xs text-zinc-500">
+                Bill
+              </p>
+
+              <p className="mt-1 text-sm text-white">
+                {item.note}
+              </p>
+            </>
+          )}
+
+          {item.recipient && (
+            <>
+              <p className="mt-3 text-xs text-zinc-500">
+                Biller Wallet
+              </p>
+
+              <p className="mt-1 break-all text-sm text-white">
+                {item.recipient}
+              </p>
+            </>
+          )}
+        </div>
+      )}
+
       {item.type === "vote" &&
         item.proposal && (
           <div
@@ -242,31 +287,33 @@ export default function HistoryItem({
         <span className="text-xs text-zinc-500">
           {new Date(
             item.timestamp
-          ).toLocaleString()}
+          ).toLocaleString("en-US")}
         </span>
 
-        <button
-          type="button"
-          onClick={() =>
-            window.open(
-              `https://testnet.arcscan.app/tx/${item.txHash}`,
-              "_blank"
-            )
-          }
-          className="
-            flex
-            items-center
-            gap-2
-            text-sm
-            text-sky-400
-            transition
-            hover:text-sky-300
-          "
-        >
-          ArcScan
+        {item.txHash && (
+          <button
+            type="button"
+            onClick={() =>
+              window.open(
+                `https://testnet.arcscan.app/tx/${item.txHash}`,
+                "_blank"
+              )
+            }
+            className="
+              flex
+              items-center
+              gap-2
+              text-sm
+              text-sky-400
+              transition
+              hover:text-sky-300
+            "
+          >
+            ArcScan
 
-          <ExternalLink size={16} />
-        </button>
+            <ExternalLink size={16} />
+          </button>
+        )}
 
       </div>
 
