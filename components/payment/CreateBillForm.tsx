@@ -24,7 +24,7 @@ export default function CreateBillForm({
     useState(BILL_CATEGORIES[0].id);
 
   const [recipient, setRecipient] =
-    useState(DEFAULT_BILLER_WALLET);
+    useState<string>(DEFAULT_BILLER_WALLET);
 
   const [amount, setAmount] =
     useState("");
